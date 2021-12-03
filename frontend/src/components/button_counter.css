@@ -1,0 +1,12 @@
+.Button-Counter-Count {
+  font-weight: bold;
+  font-size: large;
+};
+
+.Button-Counter-Container {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: larger;
+  background-color: beige;
+}
