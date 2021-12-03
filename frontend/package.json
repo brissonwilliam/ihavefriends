@@ -9,6 +9,7 @@
   "author": "William Brisson",
   "license": "GPL-3.0",
   "dependencies": {
+    "bootstrap-icons": "^1.7.1",
     "ejs": "^3.1.6",
     "express": "^4.17.1"
   }
