@@ -4,6 +4,7 @@
   "description": "A static server meant to bring joy and happiness to my friends. You wouldn't get it, it's our inside jokes.",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "William Brisson",
