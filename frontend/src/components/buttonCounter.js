@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Button from 'react-bootstrap/Button';
+import "./buttonCounter.css"
 
 class ButtonCounter extends Component {
     constructor() {
@@ -33,11 +34,16 @@ class ButtonCounter extends Component {
 
     render() {
         return (
-            <div className="Button-Counter-Container">
-                <Button className="mb-4" onClick={this.handleClick} size="lg" variant="dark">+1</Button>
-                
-                <p class="h4">Bonne fête raph!</p>
-                <p class="h2">Tu as <span className="Button-Counter-Count"> {this.state.c} </span> ans!</p>
+            <div className="d-grip col-12">
+                <div className="Button-Counter-Container text-wrap fs-1 mt-5 mb-5 lh-sm">
+                    <p className="m-0">Bonne fête raph!</p>
+                    <p className="m-0">Tu as 
+                        <span className="Button-Counter-Count m-0"> {this.state.c} </span>
+                        ans!
+                    </p>
+                </div>  
+
+                <Button className="mb-4 Btn-Counter-Btn" onClick={this.handleClick} variant="dark">+1</Button>              
             </div>
         );
     }
