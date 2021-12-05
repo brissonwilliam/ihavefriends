@@ -1,6 +1,8 @@
 import logo from './logo.svg';
-import './App.css';
-import ButtonCounter from './components/button_counter'
+import './app.css';
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Dashboard from './components/dashboard';
+import Login from './components/login';
 
 function App() {
   return (
@@ -8,12 +10,14 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
       </header>
-      <div className="App-Body">
-        <div calssName="App-Container-ButtonCounter">
-          <ButtonCounter />
-        </div>
-        
-      </div>
+
+      <Router>
+        <Routes>
+          <Route exact path="/" element={<Dashboard/>}/>
+          <Route path="/dashboard" element={<Dashboard/>}/>
+          <Route path="/login" element={<Login/>}/>
+        </Routes>
+      </Router>
       
     </div>
   );
