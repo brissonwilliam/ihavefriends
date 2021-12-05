@@ -9,7 +9,11 @@
   },
   "author": "William Brisson",
   "license": "GPL-3.0",
-  "dependencies": {
+  "devDependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.6"
   }
 }

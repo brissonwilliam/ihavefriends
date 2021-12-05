@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './app.css';
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from './components/dashboard';
 import Login from './components/login';
 
@@ -13,7 +13,7 @@ function App() {
 
       <Router>
         <Routes>
-          <Route exact path="/" element={<Dashboard/>}/>
+          <Route path="/" element={<Navigate replace to="/dashboard"/>}/>
           <Route path="/dashboard" element={<Dashboard/>}/>
           <Route path="/login" element={<Login/>}/>
         </Routes>

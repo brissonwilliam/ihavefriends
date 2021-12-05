@@ -1,0 +1,1 @@
+curl -d '{"user":"fake","password":"backend"}' -H "Content-Type: application/json" --cookie-jar cookies.txt -X POST http://localhost:6900/api/auth
