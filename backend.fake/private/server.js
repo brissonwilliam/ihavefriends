@@ -28,12 +28,13 @@ class FakeBackend {
         })
 
 
-        app.post("/api/auth", (req, res) => {           
-            let username = req.body.user
+        app.post("/api/auth", (req, res) => {       
+            let username = req.body.username
             let password = req.body.password
 
-            if (username != "fake" || password != "backend") {
-                res.sendStatus(404)
+            if (!(username === "fake" && password === "backend")) {
+                res.statusCode = 401;
+                res.send("invalid credentials");
                 return
             }
 
@@ -43,12 +44,14 @@ class FakeBackend {
                 username: "FakeBackend"
             };
 
-            let cookieOptions = {
-                maxAge: userInfo.exp,
-                httpOnly: true,
-                signed: false,
-            };
-            res.cookie('user', userInfo, cookieOptions);
+            // re-enable if we want to backend to serve cookies rather than let the client handle them
+            // let cookieOptions = {
+            //     maxAge: userInfo.exp,
+            //     httpOnly: true,
+            //     signed: false,
+            // };
+            // res.cookie('user', userInfo, cookieOptions);
+            
 
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify(userInfo));

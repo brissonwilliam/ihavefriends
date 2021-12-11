@@ -1,91 +1,120 @@
 import React, { Component } from 'react';
-import { useCookies } from 'react-cookie';
 import  { Navigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 import './login.css';
 
+export default function Login() {
+    const [cookies, setCookie] = useCookies(['jwt', 'jwtExpiration']);
 
-class Login extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-        };
+    if (IsJWTValid(cookies.jwt, cookies.jwtExpiration)) {
+        return (<Navigate replace to="/dashboard"/>);
     }
 
-    componentDidMount() {
-        // check if we already have a valid auth in cookies
-        if (IsLoginValid()) {
-            console.log("valid login, redirecting")
+    class Login extends Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                isLoggedIn: false,
+                showInvalidCredentials: false
+            }
         }
-      }
-
-    handleSubmit = async e => {
-        e.preventDefault();
-
-        let credentials = {username: "Fake", password: "Backend"};
-        loginUser(credentials, this.handleLoginResult);
         
-    }
+        handleSubmit = (e) => {
+            e.preventDefault();
 
-    handleLoginResult(authResp) {
-        
-        // todo: redirect on success
-    }
+            let credentials = {username: "fake", password: "backend"};
+            this.postAuthenticate(credentials)
+                .then(res => {
+                    if (!res.ok) {
+                        this.setState({
+                            showInvalidCredentials: true
+                        });
+                        throw new Error("Invalid crendentials");
+                    }   
+                    return res.json();                 
+                })
+                .catch(err => console.log(err))
+                .then(jsonRes => {
+                    let userInfo = {
+                        jwt: jsonRes.jwt,
+                        jwtExpiration: jsonRes.exp,
+                        name: jsonRes.username
+                    };
+                    this.setUserInfo(userInfo);
+                }); 
+        }
 
-    render() {
+        async setUserInfo(userInfo) {
+            let cookieOptions = {sameSite: true};
+            setCookie('jwt', userInfo.jwt, cookieOptions);
+            setCookie('jwtExpiration', userInfo.jwtExpiration, cookieOptions);
+            this.setState({
+                isLoggedIn: true
+            });
+        }
 
-    return(
-        <div className="Login-Wrapper">
-            <h1>Who are you?</h1>
-            <form onSubmit={this.handleSubmit}>
-            <label>
-                <p>Username</p>
-                <input type="text" />
-            </label>
-            <label>
-                <p>Password</p>
-                <input type="password" />
-            </label>
-            <div>
-                <button type="submit">Submit</button>
-            </div>
-            </form>
-        </div>
-        );
-    }
+        postAuthenticate(credentials) {
+            let options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(credentials)
+            };
+            return fetch('/api/auth', options)
+        }
+       
+        render() {
+            if (this.state.isLoggedIn) {
+                return (<Navigate replace to="/dashboard"/>);
+            }
     
-}
+            return(
+                <div className="Login-Wrapper">
+                    <h1>Who are you?</h1>
+                    <form onSubmit={this.handleSubmit}>
+                    <label>
+                        <p>Username</p>
+                        <input type="text" />
+                    </label>
+                    <label>
+                        <p>Password</p>
+                        <input type="password" />
+                    </label>
+                    <div className={this.state.showInvalidCredentials ? "" : ".d-none"}>
+                        <label>Invalid credentials</label>
+                    </div>
+                    <div>
+                        <button type="submit">Submit</button>
+                    </div>
+                    </form>
+                </div>
+            );
+        }
+        
+    }
 
-async function loginUser(credentials, callback) {
-    let options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
-    };
-    return fetch('/api/auth', options)
-        .then(res => res.json())
-        .then(callback);
-}
+    return <Login/>
+};
 
-export default Login;
-  
-// isLoginValid checks for information stored in cookie to determine if
+// IsJWTValid checks for jwt in cookies to determine if
 // a new auth should be made.
 // Not validating on the server side to make things lighter
 // If user messes with his token or expiration the server will retun 401
 // on other endpoints anyways
-export function IsLoginValid() {
-    const [cookies, setCookie] = useCookies(['user']);
+export function IsJWTValid(jwt, jwtExpiration) {
+    console.log(jwt)
+    console.log(jwtExpiration)
 
-    if (cookies.jwt === '' || cookies.jwtExpiration === '') {
+    if (jwt == null || jwtExpiration == null || jwt === "" || jwtExpiration === "" || jwt === "undefined" || jwtExpiration === "undefined") {
         return false;
     }
 
-    // FIXME: not sure if this works, need to test
-    let expirationDate = new Date(Date.parse(cookies.jwtExpiration))
-    if (expirationDate.getTime() > new Date().getUTCDate()) {
+    let expirationDate = new Date(Date.parse(jwtExpiration));
+    let now = new Date();
+
+    if (now > expirationDate) {
+        console.log("expired!");
         return false
     }
 
