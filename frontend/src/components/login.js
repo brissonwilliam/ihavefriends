@@ -27,7 +27,6 @@ export default function Login() {
             e.preventDefault();
 
             let credentials = {username: this.state.selectedUser, password: e.target.elements.password.value};
-            console.log(credentials)
             this.postAuthenticate(credentials)
                 .then(res => {
                     if (!res.ok) {
@@ -118,10 +117,6 @@ export default function Login() {
 // If user messes with his token or expiration the server will retun 401
 // on other endpoints anyways
 export function IsJWTValid(jwt, jwtExpiration) {
-    console.log("showing cookies for login")
-    console.log(jwt)
-    console.log(jwtExpiration)
-
     if (jwt == null || jwtExpiration == null || jwt === "" || jwtExpiration === "" || jwt === "undefined" || jwtExpiration === "undefined") {
         return false;
     }
@@ -130,7 +125,6 @@ export function IsJWTValid(jwt, jwtExpiration) {
     let now = new Date();
 
     if (now > expirationDate) {
-        console.log("expired!");
         return false
     }
 
