@@ -31,7 +31,7 @@ export default function Header() {
 
             return (
             <header className="Header">
-                <div className="row ps-4 pe-3 pt-1 pb-1 ">
+                <div className="row ps-4 pe-3 pt-1 pb-1 me-0 ms-0">
                     <div className="col-9 text-start">
                         <span>SP MASTER</span>
                     </div>

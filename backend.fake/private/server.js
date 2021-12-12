@@ -9,6 +9,7 @@ const { userInfo } = require("os");
 const port = process.env.port || 6900;
 
 var c = 200;
+const userSelection = ["willow", "jowanne", "rose", "lauree", "stayo", "boeuf", "raph", "goulat"];
 
 class FakeBackend {
     start() {
@@ -32,7 +33,7 @@ class FakeBackend {
             let username = req.body.username
             let password = req.body.password
 
-            if (!(username === "fake" && password === "backend")) {
+            if (!(userSelection.includes(username) && password === "corsaire")) {
                 res.statusCode = 401;
                 res.send("invalid credentials");
                 return

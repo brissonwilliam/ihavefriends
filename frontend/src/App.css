@@ -11,3 +11,8 @@
 .App-link {
   color: #61dafb;
 }
+
+.Hidden {
+  visibility: hidden;
+  display: none;
+}
