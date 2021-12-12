@@ -1,9 +1,11 @@
 import './app.css';
+import Header from "./components/header"
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from './components/dashboard';
 import Login, {IsJWTValid} from './components/login';
 import { useCookies } from 'react-cookie';
 import { Outlet } from 'react-router';
+
 
 function App() {
   const [cookies] = useCookies(['jwt', 'jwtExpiration']);
@@ -17,9 +19,7 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        
-      </header>
+      <Header/>
 
       <Router>
         <Routes>

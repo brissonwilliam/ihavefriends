@@ -1,0 +1,15 @@
+.Header {
+    background-color: #1b1b1b;
+    min-height: .6in;
+    font-size: calc(15px + 2vmin);
+    color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 25px;
+}
+
+.Header-logout-btn {
+    background-color: rgb(255, 255, 255) !important;
+    color:black !important;
+    border-color: black !important;
+}
