@@ -4,11 +4,23 @@ const app = express();
 const cors = require('cors');
 
 const path = require('path');
-const { userInfo } = require("os");
 
 const port = process.env.port || 6900;
 
-var c = 200;
+const increment = 1;
+
+var analytics = {
+    total: 0,
+    totalByUsers: [
+        /* just as a reference of what objects should look like
+        {
+            name: "",
+            count: 0
+        }
+        */
+    ]
+}
+
 const userSelection = ["willow", "jowanne", "rose", "lauree", "stayo", "boeuf", "raph", "goulat"];
 
 class FakeBackend {
@@ -19,13 +31,15 @@ class FakeBackend {
 
         app.get("/api/bonneFeteRaph", (req, res) => {
             res.setHeader('Content-Type', 'application/json')
-            res.end(JSON.stringify({nbBonneFete: c}))
+            res.end(JSON.stringify(analytics))
         });
 
         app.post("/api/bonneFeteRaph", (req, res) => {
-            c++;
-            res.setHeader('Content-Type', 'application/json')
-            res.end(JSON.stringify({nbBonneFete: c}))
+            this.updateReport(req.body.userId, 1); // in the real backend, instead of reading body, we should just read from the jwt or user creds
+            console.log(analytics)
+
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(analytics))
         })
 
 
@@ -67,9 +81,40 @@ class FakeBackend {
     }
 
     getJwtExpirationDate() {
-        var jwtExpiration = new Date(Date.now());
+        let jwtExpiration = new Date(Date.now());
         jwtExpiration.setMinutes(jwtExpiration.getUTCMinutes() + 10);
         return jwtExpiration
+    }
+
+    updateReport(userId) {
+        if (userId == undefined) {
+            userId = "unknown";
+        }
+
+        analytics.total += increment;
+
+        let found = false;
+        analytics.totalByUsers.every(function(userTotal, i) {
+            if (userTotal.name === userId) {
+                analytics.totalByUsers[i].count += increment;
+                found = true;
+
+                return false; // break
+            }
+
+            // remember that we didn't find anything so we can create a new object
+            if (i === analytics.totalByUsers.length - 1) {
+                found = false;
+            }
+            return true; // continue
+        })
+
+        if (!found) {
+            analytics.totalByUsers.push({
+                name: userId,
+                count: increment
+            })
+        }
     }
 }
 
