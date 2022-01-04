@@ -95,7 +95,7 @@ export default function Login() {
                                 <input name="password" type="password" />
                             </div>
                             <div>
-                                <label className={this.state.showInvalidCredentials ? "text-danger" : "d-none"}>Nope! Try again!</label>
+                                <label className={this.state.showInvalidCredentials ? "text-danger mt-2" : "d-none"}>Nope! Try again!</label>
                             </div>
                         </div>
                        
