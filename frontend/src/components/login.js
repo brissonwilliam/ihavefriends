@@ -68,6 +68,7 @@ export default function Login() {
             return fetch('/api/auth', options)
         }
 
+        // this callback is called from UserSelection child
         handleUserSelected = (id) => {
             this.setState({
                 selectedUser: id

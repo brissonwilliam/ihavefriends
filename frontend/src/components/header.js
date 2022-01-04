@@ -2,7 +2,7 @@ import "./header.css"
 import { Component } from "react"
 import Button from 'react-bootstrap/Button';
 import { useCookies } from "react-cookie";
-import { Navigate } from "react-router";
+import {IsJWTValid} from './login';
 
 
 export default function Header() {
@@ -14,17 +14,19 @@ export default function Header() {
             this.state = {
                 redirectToLogin: false
             }
-            this.handleClick = this.handleClick.bind(this);
+            this.handleLogoutClick = this.handleLogoutClick.bind(this);
         }
     
     
-        handleClick(e) {
+        handleLogoutClick(e) {
             deleteCookie('jwt');
             deleteCookie('jwtExpiration');
             this.setState({redirectToLogin: true});
         }
     
         render() {
+            let isLoggedIn = IsJWTValid(cookies.jwt, cookies.jwtExpiration);
+
             if (this.state.redirectToLogin) {
                 return (window.location.reload());
             }
@@ -36,8 +38,8 @@ export default function Header() {
                         <span>SP MASTER</span>
                     </div>
                     <div className="col-1"></div>
-                    <div className="col-2">
-                        <Button className="btn float-end p-1 Header-logout-btn" onClick={this.handleClick}>Logout</Button>
+                    <div className={isLoggedIn ? "col-2" : "d-none"}>
+                        <Button className="btn float-end p-1 Header-logout-btn" onClick={this.handleLogoutClick}>Logout</Button>
                     </div>
                 </div>
             </header>);
