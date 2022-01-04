@@ -47,8 +47,8 @@ class ButtonCounter extends Component {
     }
 
     render() {
-        let analyticsHtml = this.state.analytics.totalByUsers.map(userTotal =>  
-            <div className="row justify-content-center">
+        let analyticsHtml = this.state.analytics.totalByUsers.map((userTotal, index) =>  
+            <div key={index} className="row justify-content-center">
                 <div className="col-6 col-lg-4">
                     <p className="m-0 m-md-1 text-start">{userTotal.name}</p>
                 </div>

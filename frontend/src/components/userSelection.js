@@ -10,8 +10,8 @@ class UserSelection extends Component {
     }
 
     render() {
-        let userSelectionHTML = userSelection.map(val =>  
-            <Button id={val} className="btn btn-danger btn-lg mt-1 mb-1 m-2" role="button" data-bs-toggle="button" onClick={this.handleClick}>{val}</Button>
+        let userSelectionHTML = userSelection.map((val, index) =>  
+            <Button id={val} key={index} className="btn btn-danger btn-lg mt-1 mb-1 m-2" role="button" data-bs-toggle="button" onClick={this.handleClick}>{val}</Button>
         );
 
         return (
