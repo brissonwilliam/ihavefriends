@@ -13,4 +13,5 @@ type User struct {
 	Created     time.Time        `json:"-" db:"created"`
 	LastUpdated time.Time        `json:"-" db:"last_updated"`
 	DeletedUnix uint64           `json:"-" db:"deleted_ut"`
+	IsPublic    bool             `json:"-" db:"is_public"`
 }

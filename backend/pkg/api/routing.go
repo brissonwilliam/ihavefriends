@@ -29,6 +29,7 @@ func (r defaultRouter) Configure(e *echo.Echo) {
 
 func (r defaultRouter) configureAuthRoutes(g *echo.Group) {
 	g.POST("auth", r.h.Auth.Post)
+	g.GET("publicUsers", r.h.Auth.GetPublicUsers)
 }
 
 func (r defaultRouter) configureBonneFeteRoutes(g *echo.Group) {

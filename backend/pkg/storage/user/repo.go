@@ -17,9 +17,14 @@ const (
 			email,
 			created,
 			last_updated,
-			deleted_ut
+			deleted_ut,
+			is_public
 		FROM user
 		WHERE %s
+	`
+
+	queryGetPublicUsernames = `
+		SELECT username FROM user WHERE is_public = 1
 	`
 )
 
@@ -29,6 +34,7 @@ var (
 
 type UserRepository interface {
 	GetByUsername(username string) (*models.User, error)
+	GetPublicUsernames() ([]string, error)
 }
 
 type defaultUserRepository struct {
@@ -42,7 +48,7 @@ func NewUserRepository(db sqlx.Ext) UserRepository {
 }
 
 func (r defaultUserRepository) GetByUsername(username string) (*models.User, error) {
-	var users []models.User
+	users := []models.User{}
 	err := sqlx.Select(r.db, &users, queryGetUserByUsername, username)
 	if err != nil {
 		return nil, err
@@ -57,4 +63,13 @@ func (r defaultUserRepository) GetByUsername(username string) (*models.User, err
 	}
 
 	return &users[0], nil
+}
+
+func (r defaultUserRepository) GetPublicUsernames() ([]string, error) {
+	usernames := []string{}
+	err := sqlx.Select(r.db, &usernames, queryGetPublicUsernames)
+	if err != nil {
+		return nil, err
+	}
+	return usernames, nil
 }

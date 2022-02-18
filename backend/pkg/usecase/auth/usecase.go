@@ -20,6 +20,7 @@ var (
 
 type Usecase interface {
 	Authenticate(form models.AuthForm) (*models.UserWithCredentials, error)
+	GetPublicUsers() ([]string, error)
 }
 
 func NewUsecase(userRepo user.UserRepository) Usecase {
@@ -75,4 +76,8 @@ func newJWT(user models.User) (string, error) {
 		return "", err
 	}
 	return token, nil
+}
+
+func (u defaultUsecase) GetPublicUsers() ([]string, error) {
+	return u.userRepo.GetPublicUsernames()
 }

@@ -16,6 +16,7 @@ type defaultHandler struct {
 // Handler implements the analytics-related controllers
 type Handler interface {
 	Post(ctx echo.Context) error
+	GetPublicUsers(ctx echo.Context) error
 }
 
 // NewHandler returns a new instance of a handler supporting analytics
