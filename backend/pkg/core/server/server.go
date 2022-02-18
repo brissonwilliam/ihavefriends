@@ -1,9 +1,11 @@
 package server
 
 import (
-	"encoding/json"
 	config "github.com/brissonwilliam/ihavefriends/backend/config"
+	"github.com/brissonwilliam/ihavefriends/backend/pkg/api"
+	"github.com/brissonwilliam/ihavefriends/backend/pkg/core/db"
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/core/logger"
+	"github.com/brissonwilliam/ihavefriends/backend/pkg/http"
 	"github.com/labstack/echo/v4"
 )
 
@@ -22,16 +24,18 @@ type defaultServer struct {
 func (d defaultServer) Start() error {
 	cfg := config.GetConfig()
 
-	b, err := json.Marshal(cfg)
-	if err == nil {
-		logger.Get().WithField("config", string(b)).Info("Starting web server")
+	logger.Get().WithField("cfg", cfg).Info("Starting web server")
+
+	db, err := db.Connect(cfg.DB)
+	if err != nil {
+		logger.Get().WithError(err).Error("Could not connect to db")
+		return err
 	}
 
-	// TODO: connect to db
-
-	// TODO: configure routes
-
 	e := echo.New()
+
+	handlers := http.NewHandlers(db)
+	api.NewRouter(handlers).Configure(e)
 
 	return e.Start(cfg.Web.Address)
 }

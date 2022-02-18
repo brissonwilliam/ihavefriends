@@ -1,7 +1,12 @@
 package main
 
-import "github.com/brissonwilliam/ihavefriends/backend/cmd"
+import (
+	"github.com/brissonwilliam/ihavefriends/backend/cmd"
+	"os"
+)
 
 func main() {
-	cmd.RootCommand().Execute()
+	if err := cmd.RootCommand().Execute(); err != nil {
+		os.Exit(-1)
+	}
 }

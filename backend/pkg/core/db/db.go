@@ -13,5 +13,13 @@ func Connect(cfg config.DB) (*sqlx.DB, error) {
 	if cfg.TLS {
 		connectionString = connectionString + "&tls=true"
 	}
-	return sqlx.Open("mysql", connectionString)
+	db, err := sqlx.Open("mysql", connectionString)
+	if err != nil {
+		return nil, err
+	}
+	err = db.Ping()
+	if err != nil {
+	 	return nil, err
+	}
+	return db, nil
 }
