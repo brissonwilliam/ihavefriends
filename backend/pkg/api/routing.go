@@ -1,7 +1,6 @@
 package api
 
 import (
-	"github.com/brissonwilliam/ihavefriends/backend/pkg/core/logger"
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/http"
 	"github.com/labstack/echo/v4"
 )
@@ -26,8 +25,6 @@ func (r defaultRouter) Configure(e *echo.Echo) {
 	g := e.Group("api/")
 	r.configureAuthRoutes(g)
 	r.configureBonneFeteRoutes(g)
-
-	logger.Get().WithField("routes", e.Routes()).Info("Routes configured")
 }
 
 func (r defaultRouter) configureAuthRoutes(g *echo.Group) {

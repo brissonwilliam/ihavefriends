@@ -7,7 +7,7 @@ import (
 )
 
 type Handlers struct {
-	Auth auth.Handler
+	Auth      auth.Handler
 	BonneFete bonneFete.Handler
 }
 

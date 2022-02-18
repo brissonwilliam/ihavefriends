@@ -7,7 +7,7 @@ import (
 )
 
 func GlobalMiddlewares() []echo.MiddlewareFunc {
-	return []echo.MiddlewareFunc{middleware.CORS()}
+	return []echo.MiddlewareFunc{middleware.Logger(), middleware.CORS(), middleware.BodyLimit("2M")}
 }
 
 func JWTMiddleware() echo.MiddlewareFunc {

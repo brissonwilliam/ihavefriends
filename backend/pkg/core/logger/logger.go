@@ -3,6 +3,7 @@ package logger
 import (
 	"github.com/brissonwilliam/ihavefriends/backend/config"
 	"github.com/sirupsen/logrus"
+	"runtime/debug"
 )
 
 // Log contains the logger unique instance
@@ -19,4 +20,8 @@ func Get() *logrus.Logger {
 	}
 
 	return log
+}
+
+func WithStack() *logrus.Entry {
+	return Get().WithField("stack", string(debug.Stack()))
 }

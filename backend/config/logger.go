@@ -14,7 +14,5 @@ func GetLogger() Logger {
 	if err != nil {
 		level = logrus.InfoLevel
 	}
-	return Logger {
-		Level: level,
-	}
+	return Logger{Level: level}
 }

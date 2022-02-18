@@ -11,8 +11,8 @@ import (
 func RootCommand() *cobra.Command {
 	return &cobra.Command{
 		PreRun: config.InitConfig,
-		Short: "Start the backend web server for ihavefriends",
-		Run: bootWebServer,
+		Short:  "Start the backend web server for ihavefriends",
+		Run:    bootWebServer,
 	}
 }
 

@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type WebServer interface{
+type WebServer interface {
 	Start() error
 }
 
@@ -17,9 +17,7 @@ func NewWebServer() WebServer {
 	return &defaultServer{}
 }
 
-type defaultServer struct {
-
-}
+type defaultServer struct{}
 
 func (d defaultServer) Start() error {
 	cfg := config.GetConfig()
@@ -39,7 +37,3 @@ func (d defaultServer) Start() error {
 
 	return e.Start(cfg.Web.Address)
 }
-
-
-
-
