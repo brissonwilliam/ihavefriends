@@ -1,8 +1,21 @@
 package bonneFete
 
-import "github.com/labstack/echo/v4"
+import (
+	"github.com/brissonwilliam/ihavefriends/backend/pkg/api/auth"
+	"github.com/brissonwilliam/ihavefriends/backend/pkg/http/httperr"
+	"github.com/labstack/echo/v4"
+	"net/http"
+)
 
 func (h defaultHandler) Post(ctx echo.Context) error {
-	panic("implement me")
-	return nil
+	jwtClaims := auth.GetJWTClaimsFromContext(ctx)
+
+	userId := jwtClaims.Id
+
+	bfAnalytics, err := h.usecase.Increment(userId)
+	if err != nil {
+		return httperr.FromCoreErr(ctx, err)
+	}
+
+	return ctx.JSON(http.StatusOK, bfAnalytics)
 }

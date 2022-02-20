@@ -17,5 +17,5 @@ func NewUserUsecase(db *sqlx.DB) user.Usecase {
 }
 
 func NewBonneFeteUsecase(db *sqlx.DB) bonnefete.Usecase {
-	return bonnefete.NewUsecase(AnalyticsRepository(db))
+	return bonnefete.NewUsecase(storage.NewTxProvider(db), AnalyticsRepository(db))
 }
