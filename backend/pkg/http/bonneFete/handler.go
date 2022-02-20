@@ -1,14 +1,16 @@
 package bonneFete
 
 import (
+	"github.com/brissonwilliam/ihavefriends/backend/pkg/core/context"
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/core/validator"
+	"github.com/brissonwilliam/ihavefriends/backend/pkg/usecase/bonnefete"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 )
 
 type defaultHandler struct {
-	usecase interface{}
-	validator          validator.Validator
+	usecase   bonnefete.Usecase
+	validator validator.Validator
 }
 
 // Handler implements the analytics-related controllers
@@ -20,7 +22,7 @@ type Handler interface {
 // NewHandler returns a new instance of a handler supporting analytics
 func NewHandler(db *sqlx.DB) Handler {
 	return defaultHandler{
-		validator:          validator.Get(),
+		validator: validator.Get(),
+		usecase:   context.NewBonneFeteUsecase(db),
 	}
 }
-

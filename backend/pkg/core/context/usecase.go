@@ -3,6 +3,7 @@ package context
 import (
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/storage"
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/usecase/auth"
+	"github.com/brissonwilliam/ihavefriends/backend/pkg/usecase/bonnefete"
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/usecase/user"
 	"github.com/jmoiron/sqlx"
 )
@@ -13,4 +14,8 @@ func NewAuthUsecase(db *sqlx.DB) auth.Usecase {
 
 func NewUserUsecase(db *sqlx.DB) user.Usecase {
 	return user.NewUsecase(storage.NewTxProvider(db), UserRepository(db))
+}
+
+func NewBonneFeteUsecase(db *sqlx.DB) bonnefete.Usecase {
+	return bonnefete.NewUsecase(AnalyticsRepository(db))
 }
