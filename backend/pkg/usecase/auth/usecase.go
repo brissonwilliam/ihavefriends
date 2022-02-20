@@ -50,29 +50,32 @@ func (u defaultUsecase) Authenticate(form models.AuthForm) (*models.UserWithCred
 		return nil, err
 	}
 
-	jwt, err := newJWT(*user, permissions)
+	jwtExpiration := time.Now().Add(JWT_VALIDITY)
+
+	jwt, err := newJWT(*user, permissions, jwtExpiration)
 	if err != nil {
 		// unexpected error, don't return not found here
 		return nil, err
 	}
 
 	userWithCreds := models.UserWithCredentials{
-		User:        *user,
-		JWT:         jwt,
-		Permissions: permissions,
+		User:          *user,
+		JWT:           jwt,
+		Permissions:   permissions,
+		JWTExpiration: jwtExpiration,
 	}
 
 	return &userWithCreds, nil
 }
 
-func newJWT(user models.User, permissions []string) (string, error) {
+func newJWT(user models.User, permissions []string, jwtExpiration time.Time) (string, error) {
 	var err error
 
 	claims := &auth.JWTClaims{
 		Id:          user.Id,
 		Permissions: permissions,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(JWT_VALIDITY).Unix(),
+			ExpiresAt: jwtExpiration.Unix(),
 		},
 	}
 

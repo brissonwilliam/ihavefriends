@@ -40,9 +40,9 @@ export default function Login() {
                 .then(jsonRes => {
                     let userInfo = {
                         jwt: jsonRes.jwt,
-                        jwtExpiration: jsonRes.exp,
-                        name: jsonRes.username
+                        jwtExpiration: jsonRes.jwtExpiration,
                     };
+                    console.log(userInfo)
                     this.setUserInfo(userInfo);
                 })
                 .catch(err => console.log(err)); 
