@@ -1,6 +1,8 @@
 package server
 
 import (
+	"errors"
+	"fmt"
 	config "github.com/brissonwilliam/ihavefriends/backend/config"
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/api"
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/core/db"
@@ -24,6 +26,11 @@ func (d defaultServer) Start() error {
 
 	logger.Get().WithField("cfg", cfg).Info("Starting web server")
 
+	if err := checkConfig(cfg); err != nil {
+		logger.Get().Error(err.Error())
+		return err
+	}
+
 	db, err := db.Connect(cfg.DB)
 	if err != nil {
 		logger.Get().WithError(err).Error("Could not connect to db")
@@ -36,4 +43,21 @@ func (d defaultServer) Start() error {
 	api.NewRouter(handlers).Configure(e)
 
 	return e.Start(cfg.Web.Address)
+}
+
+func checkConfig(cfg config.CompleteConfig) error {
+	baseErrMsg := "invalid JwtKey. Make sure %s env var is set"
+	if cfg.Web.JwtKey == "" {
+		return errors.New(fmt.Sprintf(baseErrMsg, "web_jwtkey"))
+	}
+	if cfg.DB.Username == "" {
+		return errors.New(fmt.Sprintf(baseErrMsg, "db_username"))
+	}
+	if cfg.DB.Host == "" {
+		return errors.New(fmt.Sprintf(baseErrMsg, "db_host"))
+	}
+	if cfg.DB.Host == "" {
+		return errors.New(fmt.Sprintf(baseErrMsg, "db_name"))
+	}
+	return nil
 }

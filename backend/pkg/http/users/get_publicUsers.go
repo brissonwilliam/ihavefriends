@@ -1,4 +1,4 @@
-package auth
+package user
 
 import (
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/http/httperr"
@@ -9,7 +9,7 @@ import (
 func (h defaultHandler) GetPublicUsers(ctx echo.Context) error {
 	users, err := h.usecase.GetPublicUsers()
 	if err != nil {
-		return httperr.GetHttpError(ctx, err)
+		return httperr.FromCoreErr(ctx, err)
 	}
 
 	return ctx.JSON(nethttp.StatusOK, users)

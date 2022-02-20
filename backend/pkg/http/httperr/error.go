@@ -7,10 +7,13 @@ import (
 	"net/http"
 )
 
-func GetHttpError(ctx echo.Context, err error) error {
+func FromCoreErr(ctx echo.Context, err error) error {
 	switch err.(type) {
 	case core.ErrNotFound:
 		ctx.String(http.StatusNotFound, err.Error())
+		return err
+	case core.ErrConflict:
+		ctx.String(http.StatusConflict, err.Error())
 		return err
 	default:
 		// defaults to internal error. Log but only write a generic error message in client response
@@ -23,5 +26,10 @@ func GetHttpError(ctx echo.Context, err error) error {
 
 func UnreadableForm(ctx echo.Context, err error) error {
 	ctx.String(http.StatusBadRequest, "Unreadable form")
+	return err
+}
+
+func InvalidRequest(ctx echo.Context, err error) error {
+	ctx.String(http.StatusBadRequest, "Invalid request. "+err.Error())
 	return err
 }

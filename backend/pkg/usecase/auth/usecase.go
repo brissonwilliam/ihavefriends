@@ -2,6 +2,7 @@ package auth
 
 import (
 	"github.com/brissonwilliam/ihavefriends/backend/config"
+	"github.com/brissonwilliam/ihavefriends/backend/pkg/api/auth"
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/core"
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/models"
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/storage/user"
@@ -12,10 +13,6 @@ import (
 
 const (
 	JWT_VALIDITY = time.Hour * 24 * 7
-)
-
-var (
-	jwtSigningKey = config.GetWeb().JwtKey
 )
 
 type Usecase interface {
@@ -48,29 +45,40 @@ func (u defaultUsecase) Authenticate(form models.AuthForm) (*models.UserWithCred
 		return nil, core.NewErrNotFound("user")
 	}
 
-	jwt, err := newJWT(*user)
+	permissions, err := u.userRepo.GetUserPermissions(user.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	jwt, err := newJWT(*user, permissions)
 	if err != nil {
 		// unexpected error, don't return not found here
 		return nil, err
 	}
 
 	userWithCreds := models.UserWithCredentials{
-		User: *user,
-		JWT:  jwt,
+		User:        *user,
+		JWT:         jwt,
+		Permissions: permissions,
 	}
 
 	return &userWithCreds, nil
 }
 
-func newJWT(user models.User) (string, error) {
+func newJWT(user models.User, permissions []string) (string, error) {
 	var err error
 
-	claims := jwt.MapClaims{}
-	claims["authorized"] = true
-	claims["id"] = user.Id
-	claims["exp"] = time.Now().Add(JWT_VALIDITY).Unix()
+	claims := &auth.JWTClaims{
+		Id:          user.Id,
+		Permissions: permissions,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(JWT_VALIDITY).Unix(),
+		},
+	}
+
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
+	jwtSigningKey := config.GetWeb().JwtKey
 	token, err := at.SignedString([]byte(jwtSigningKey))
 	if err != nil {
 		return "", err

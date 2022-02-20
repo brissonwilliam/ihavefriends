@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/brissonwilliam/ihavefriends/backend/pkg/api/auth"
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/http"
 	"github.com/labstack/echo/v4"
 )
@@ -24,12 +25,17 @@ func (r defaultRouter) Configure(e *echo.Echo) {
 
 	g := e.Group("api/")
 	r.configureAuthRoutes(g)
+	r.configureUserRoutes(g)
 	r.configureBonneFeteRoutes(g)
 }
 
 func (r defaultRouter) configureAuthRoutes(g *echo.Group) {
 	g.POST("auth", r.h.Auth.Post)
-	g.GET("publicUsers", r.h.Auth.GetPublicUsers)
+}
+
+func (r defaultRouter) configureUserRoutes(g *echo.Group) {
+	g.GET("publicUsers", r.h.User.GetPublicUsers)
+	g.POST("users", r.h.User.Post, JWTMiddleware(), Permissions(auth.PERM_ADD_USER))
 }
 
 func (r defaultRouter) configureBonneFeteRoutes(g *echo.Group) {

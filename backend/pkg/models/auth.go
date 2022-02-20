@@ -6,6 +6,7 @@ type AuthForm struct {
 }
 
 type UserWithCredentials struct {
-	User User   `json:"user"`
-	JWT  string `json:"jwt"`
+	User        User     `json:"user"`
+	JWT         string   `json:"jwt"`
+	Permissions []string `json:"permissions"`
 }
