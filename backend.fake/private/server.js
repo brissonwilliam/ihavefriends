@@ -29,12 +29,12 @@ class FakeBackend {
         app.use(cors())
         app.use(cookieParser())
 
-        app.get("/api/bonneFeteRaph", (req, res) => {
+        app.get("/api/bonneFete", (req, res) => {
             res.setHeader('Content-Type', 'application/json')
             res.end(JSON.stringify(analytics))
         });
 
-        app.post("/api/bonneFeteRaph", (req, res) => {
+        app.post("/api/bonneFete", (req, res) => {
             this.updateReport(req.body.userId, 1); // in the real backend, instead of reading body, we should just read from the jwt or user creds
             console.log(analytics)
 
