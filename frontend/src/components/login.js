@@ -69,9 +69,9 @@ export default function Login() {
         }
 
         // this callback is called from UserSelection child
-        handleUserSelected = (id) => {
+        handleUserSelected = (username) => {
             this.setState({
-                selectedUser: id
+                selectedUser: username
             });
         }
        
