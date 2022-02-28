@@ -7,8 +7,8 @@ import "./buttonCounter.css";
 export default function ButtonCounter() {
     const [cookies, setCookie] = useCookies(['jwt', 'jwtExpiration']);
 
-    const host = '127.0.0.1:8080'
-    const wsUrl = 'ws://' + host + '/api/bonneFete/ws?token=' + cookies.jwt
+    const BACKEND_HOST = process.env.BACKEND_HOST;
+    const wsUrl = 'ws://' + BACKEND_HOST + '/api/bonneFete/ws?token=' + cookies.jwt
     var ws;
 
     class ButtonCounter extends Component {
