@@ -1,7 +1,6 @@
 package bonneFete
 
 import (
-	"fmt"
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/core/logger"
 	"github.com/gorilla/websocket"
 	"time"
@@ -36,7 +35,7 @@ func (c *WSClient) writePump() {
 	for {
 		select {
 		case message, ok := <-c.msg:
-			fmt.Println("New message to broadcast!")
+			logger.Get().Info("Broadcasting message!")
 			c.ws.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
 				// The hub closed the channel.

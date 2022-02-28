@@ -14,13 +14,14 @@ var (
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
 		CheckOrigin: func(r *http.Request) bool {
-			if strings.Contains(r.RemoteAddr, "127.0.0.1") {
+			origin := r.Header.Get("Origin")
+			if strings.Contains(origin, "127.0.0.1") {
 				return true
 			}
-			if strings.Contains(r.RemoteAddr, "sourpusss.com") {
+			if strings.Contains(origin, "sourpusss.com") {
 				return true
 			}
-			if strings.Contains(r.RemoteAddr, "localhost") {
+			if strings.Contains(origin, "localhost") {
 				return true
 			}
 			return false
