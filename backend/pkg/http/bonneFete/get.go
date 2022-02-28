@@ -20,6 +20,9 @@ var (
 			if strings.Contains(r.RemoteAddr, "sourpusss.com") {
 				return true
 			}
+			if strings.Contains(r.RemoteAddr, "localhost") {
+				return true
+			}
 			return false
 		},
 	}
