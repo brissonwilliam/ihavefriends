@@ -32,17 +32,16 @@ export default function Header() {
             }
 
             return (
-            <header className="Header">
-                <div className="row ps-4 pe-3 pt-1 pb-1 me-0 ms-0">
-                    <div className="col-9 text-start">
+            <div className="Header">
+                <div className="row d-flex pt-2 pb-2 ms-2 me-2">
+                    <div className="col-10 text-start">
                         <span>SP MASTER</span>
                     </div>
-                    <div className="col-1"></div>
-                    <div className={isLoggedIn ? "col-2" : "d-none"}>
-                        <Button className="btn float-end p-1 Header-logout-btn" onClick={this.handleLogoutClick}>Logout</Button>
+                    <div className="col-2 d-flex justify-content-end">
+                        <Button className={isLoggedIn? "btn Header-logout-btn": "d-none"} onClick={this.handleLogoutClick}>Logout</Button>
                     </div>
                 </div>
-            </header>);
+            </div>);
         }
     }
 
