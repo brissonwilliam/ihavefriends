@@ -7,9 +7,9 @@ import (
 )
 
 type CompleteConfig struct {
-	DB DB
+	DB     DB
 	Logger Logger
-	Web Web
+	Web    Web
 }
 
 func GetConfig() CompleteConfig {
@@ -26,7 +26,9 @@ func InitConfig(cmd *cobra.Command, args []string) {
 	viper.SetConfigName("dev")
 	viper.SetConfigType("env")
 	err := viper.ReadInConfig() // Find and read the config file
-	if err != nil { // Handle errors reading the config file
-		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+	if err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+			fmt.Errorf("Fatal error config file: %s \n", err)
+		}
 	}
 }
