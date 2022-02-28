@@ -15,7 +15,7 @@ const (
 			IFNULL(bonnefete.total, 0) AS total
 		FROM user
 		LEFT JOIN bonnefete ON bonnefete.user_id = user.id
-		ORDER BY total DESC
+		ORDER BY total, username DESC
 	`
 
 	queryUpdateIncrementBF = `
