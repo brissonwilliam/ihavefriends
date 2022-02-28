@@ -15,8 +15,6 @@ export default function ButtonCounter() {
 
     class ButtonCounter extends Component {
         constructor() {
-            console.log(BACKEND_HOST)
-            console.log(process.env)
             super();
             this.state = {
                 analytics: {
