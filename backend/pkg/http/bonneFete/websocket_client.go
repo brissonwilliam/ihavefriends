@@ -28,6 +28,8 @@ type WSClient struct {
 func (c *WSClient) writePump() {
 	pingTicker := time.NewTicker(pingPeriod)
 	defer func() {
+		logger.Get().Info("writePump timeout, closing websocket")
+
 		pingTicker.Stop()
 		c.hub.Unsubscribe <- c
 		c.ws.Close()
@@ -62,6 +64,8 @@ func (c *WSClient) writePump() {
 // If connection is broken, the client gets unsubscribed and connection is closed
 func (c *WSClient) readPump() {
 	defer func() {
+		logger.Get().Info("readPump timeout, closing websocket")
+
 		// when ReadLimit is reached, unsubscribe and close the connection
 		c.hub.Unsubscribe <- c
 		c.ws.Close()
