@@ -1,10 +1,15 @@
 import React, {Component} from 'react';
 import Button from 'react-bootstrap/Button';
 import { useCookies } from 'react-cookie';
-import "./buttonCounter.css"
+import { w3cwebsocket as W3CWebSocket } from "websocket";
+import "./buttonCounter.css";
 
 export default function ButtonCounter() {
     const [cookies, setCookie] = useCookies(['jwt', 'jwtExpiration']);
+
+    const host = '127.0.0.1:8080'
+    const wsUrl = 'ws://' + host + '/api/bonneFete/ws?token=' + cookies.jwt
+    var ws;
 
     class ButtonCounter extends Component {
         constructor() {
@@ -21,16 +26,33 @@ export default function ButtonCounter() {
                 }
             };
             this.handleClick = this.handleClick.bind(this);
+            
         }
-    
+
         componentDidMount() {
+            ws = new W3CWebSocket(wsUrl);
+            ws.onopen = () => {
+                console.log("websocket connected");
+            };
+            ws.onmessage = (message) => {
+                const dataFromServer = JSON.parse(message.data);
+                this.updateStateFromResponse(dataFromServer)
+            };
+            ws.onclose = (e) => {
+                console.log("websocket closed");
+            };
+
             const requestOptions = {
                 method: 'GET',
                 headers: {'Authorization': 'Bearer ' + cookies.jwt}
-            };
+            }
             fetch('/api/bonneFete', requestOptions)
                 .then(res => res.json())
                 .then(res => this.updateStateFromResponse(res));
+        }
+
+        componentWillUnmount() {  
+            ws.close();
         }
     
         updateStateFromResponse(res) {

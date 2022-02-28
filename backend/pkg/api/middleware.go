@@ -1,8 +1,11 @@
 package api
 
 import (
+	"errors"
 	"github.com/brissonwilliam/ihavefriends/backend/config"
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/api/auth"
+	"github.com/brissonwilliam/ihavefriends/backend/pkg/core/logger"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"net/http"
@@ -19,6 +22,36 @@ func JWTMiddleware() echo.MiddlewareFunc {
 		SigningKey:    []byte(config.GetWeb().JwtKey),
 		SigningMethod: middleware.AlgorithmHS256,
 	})
+}
+
+func JWTParamsMiddleware() echo.MiddlewareFunc {
+	return func(nextHandler echo.HandlerFunc) echo.HandlerFunc {
+		return func(ctx echo.Context) error {
+			tokenStr := ctx.QueryParam("token")
+			if tokenStr == "" {
+				return ctx.String(http.StatusUnauthorized, "Unauthorized")
+			}
+
+			t, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+				_, ok := token.Method.(*jwt.SigningMethodHMAC)
+				if !ok {
+					return nil, errors.New("invalid token signature")
+				}
+				return []byte(config.GetWeb().JwtKey), nil
+			})
+
+			if err != nil {
+				logger.Get().Error(err)
+				return ctx.String(http.StatusUnauthorized, "Unauthorized")
+			}
+
+			if !t.Valid {
+				return ctx.String(http.StatusUnauthorized, "Unauthorized")
+			}
+
+			return nextHandler(ctx)
+		}
+	}
 }
 
 func Permissions(requiredPermissions ...string) echo.MiddlewareFunc {

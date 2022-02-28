@@ -5,11 +5,24 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"strings"
 )
 
 var (
 	// the http request upgrader to a websocket
-	upgrader = websocket.Upgrader{}
+	upgrader = websocket.Upgrader{
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+		CheckOrigin: func(r *http.Request) bool {
+			if strings.Contains(r.RemoteAddr, "127.0.0.1") {
+				return true
+			}
+			if strings.Contains(r.RemoteAddr, "sourpusss.com") {
+				return true
+			}
+			return false
+		},
+	}
 )
 
 func (h *defaultHandler) GetWebSocket(ctx echo.Context) error {
