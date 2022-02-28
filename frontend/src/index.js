@@ -5,6 +5,7 @@ import App from './app';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+require('dotenv').config()
 
 ReactDOM.render(
   <React.StrictMode>

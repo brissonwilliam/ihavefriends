@@ -4,15 +4,19 @@ import { useCookies } from 'react-cookie';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import "./buttonCounter.css";
 
+const BACKEND_HOST = process.env.REACT_APP_BACKEND_HOST;
+
 export default function ButtonCounter() {
+
     const [cookies, setCookie] = useCookies(['jwt', 'jwtExpiration']);
 
-    const BACKEND_HOST = process.env.BACKEND_HOST;
-    const wsUrl = 'ws://' + BACKEND_HOST + '/api/bonneFete/ws?token=' + cookies.jwt
+    var wsUrl = 'wss://' + BACKEND_HOST + '/api/bonneFete/ws?token=' + cookies.jwt
     var ws;
 
     class ButtonCounter extends Component {
         constructor() {
+            console.log(BACKEND_HOST)
+            console.log(process.env)
             super();
             this.state = {
                 analytics: {
@@ -52,7 +56,9 @@ export default function ButtonCounter() {
         }
 
         componentWillUnmount() {  
-            ws.close();
+            if (ws != null) {
+                ws.close();
+            }
         }
     
         updateStateFromResponse(res) {
