@@ -2,7 +2,7 @@
 
 
 <!-- ABOUT THE PROJECT -->
-## About The Project
+# About The Project
 
 ihavefriends is a personnal project made just for fun for my friends. Most of the content and functionnalities 
 of the website are not to be taken seriously. They are not meant to be understood or used by the general public
@@ -11,48 +11,68 @@ as they are built uppon inside jokes and fun memories of the clique.
 
 ### Built With
 
-* [NodeJS](https://nodejs.org/en/)
 * [Go](https://go.dev/)
+* [NodeJS](https://nodejs.org/en/)
 * [React.js](https://reactjs.org/)
 * [Bootstrap](https://getbootstrap.com)
+
+
+## TODO List
+
+This project is currently in development. Here are some important missing parts of the project.
+
+### Technical tasks
+- UNIT TESTS
+- MORE UNIT TESTS, anything under 90% is a shame
+- Build with docker
+- GitHub Actions CI to deploy on PROD
+
+### Features
+- Bill analytics: users can enter their Bill at Le Corsaire. In the dashboard, their highest bill ever paid is displayed as well as the cummulative amount of all time. Also display the cumulative of all users)
+- Users can reset their bonneFete count 
+- Users can change their password
+- User creation for super admins
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-To get a local copy up and running follow these simple example steps.
-
 ### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
 * npm
-  ```sh
-  npm install npm@latest -g
-  ```
+* go
 
 ### Installation
 
 1. Clone the repo
-   ```sh
-   git clone https://github.com/github_username/repo_name.git
    ```
-2. Run
-   ```sh
+   git clone git@github.com:brissonwilliam/ihavefriends.git
+   ```
+2. Install npm dependencies
+   ```
+   cd frontend
    npm install
    ```
-    Run in Docker
-    ```
+3. Install go dependencies
+   ```
+   cd backend
+   go mod download
+   ```
 
-    ```
+### Building and running the project
+Frontend dev
+```
+npm start
+```
 
+Frontend build for production. This creates js chunks and cached static files that can be served in production. Also bakes in the PROD config (hosts, not secrets, duh!)
+```
+npm run build -- --production
+```
 
-
-<!-- USAGE EXAMPLES -->
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
+Backend build
+```
+go build
+```
 
 
 <!-- LICENSE -->
