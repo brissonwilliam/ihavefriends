@@ -18,7 +18,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"willow\",\r\n    \"password\": \"c0rsaire!69\"\r\n}",
+							"raw": "{\r\n    \"username\": \"willow\",\r\n    \"password\": \"corsaire\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -94,6 +94,35 @@
 							"path": [
 								"api",
 								"bonneFete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "bonnefeteReset",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host_url}}/api/bonneFete/reset",
+							"host": [
+								"{{host_url}}"
+							],
+							"path": [
+								"api",
+								"bonneFete",
+								"reset"
 							]
 						}
 					},
