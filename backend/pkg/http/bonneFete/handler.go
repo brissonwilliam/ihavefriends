@@ -17,6 +17,7 @@ type defaultHandler struct {
 // Handler implements the analytics-related controllers
 type Handler interface {
 	Post(ctx echo.Context) error
+	ResetCount(ctx echo.Context) error
 	Get(ctx echo.Context) error
 	GetWebSocket(ctx echo.Context) error
 }

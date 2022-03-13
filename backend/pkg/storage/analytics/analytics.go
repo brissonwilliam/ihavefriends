@@ -2,6 +2,7 @@ package analytics
 
 import (
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/core"
+	"github.com/brissonwilliam/ihavefriends/backend/pkg/core/logger"
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/core/uuid"
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/models"
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/storage"
@@ -19,7 +20,11 @@ const (
 	`
 
 	queryUpdateIncrementBF = `
-		UPDATE bonnefete SET total = total + 1 WHERE user_id = ?
+		UPDATE bonnefete SET total = total + 1, last_updated = now() WHERE user_id = ?
+	`
+
+	queryUpdateResetBFCount = `
+		UPDATE bonnefete SET total = 0, last_updated = now() WHERE user_id = ?
 	`
 
 	queryEnsureBFEntryExists = `
@@ -32,6 +37,7 @@ const (
 type AnalyticsRepository interface {
 	GetTotalByUsers() ([]models.BFTotalByUser, error)
 	IncrementBF(userId uuid.OrderedUUID) error
+	ResetCount(userId uuid.OrderedUUID) error
 	WithUnitOfWork(uow storage.UnitOfWork) AnalyticsRepository
 }
 
@@ -69,7 +75,34 @@ func (r defaultUserRepository) IncrementBF(userId uuid.OrderedUUID) error {
 	if err != nil {
 		return err
 	}
-	if n, _ := rowsUpdated.RowsAffected(); n < 1 {
+	n, errRows := rowsUpdated.RowsAffected()
+	if errRows != nil {
+		logger.Get().Error(err)
+		return errRows
+	}
+	if n < 1 {
+		return core.NewErrNotFound("user " + userId.String())
+	}
+
+	return nil
+}
+
+func (r defaultUserRepository) ResetCount(userId uuid.OrderedUUID) error {
+	_, err := r.db.Exec(queryEnsureBFEntryExists, userId)
+	if err != nil {
+		return err
+	}
+
+	rowsUpdated, err := r.db.Exec(queryUpdateResetBFCount, userId)
+	if err != nil {
+		return err
+	}
+	n, errRows := rowsUpdated.RowsAffected()
+	if errRows != nil {
+		logger.Get().Error(err)
+		return errRows
+	}
+	if n < 1 {
 		return core.NewErrNotFound("user " + userId.String())
 	}
 

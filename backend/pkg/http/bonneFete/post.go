@@ -28,3 +28,23 @@ func (h *defaultHandler) Post(ctx echo.Context) error {
 
 	return ctx.JSON(http.StatusOK, bfAnalytics)
 }
+
+func (h *defaultHandler) ResetCount(ctx echo.Context) error {
+	jwtClaims := auth.GetJWTClaimsFromContext(ctx)
+
+	userId := jwtClaims.Id
+
+	bfAnalytics, err := h.usecase.ResetCount(userId)
+	if err != nil {
+		return httperr.FromCoreErr(ctx, err)
+	}
+
+	analyticsJson, err := json.Marshal(bfAnalytics)
+	if err != nil {
+		logger.Get().WithError(err).Error("Could not parse analytics to json. Will not send to websocket broadcast")
+	} else {
+		h.wsHub.BroadcastMsg <- analyticsJson
+	}
+
+	return ctx.JSON(http.StatusOK, bfAnalytics)
+}

@@ -40,6 +40,7 @@ func (r defaultRouter) configureUserRoutes(g *echo.Group) {
 
 func (r defaultRouter) configureBonneFeteRoutes(g *echo.Group) {
 	g.POST("bonneFete", r.h.BonneFete.Post, JWTMiddleware())
+	g.POST("bonneFete/reset", r.h.BonneFete.ResetCount, JWTMiddleware())
 	g.GET("bonneFete", r.h.BonneFete.Get, JWTMiddleware())
 	g.GET("bonneFete/ws", r.h.BonneFete.GetWebSocket, JWTParamsMiddleware())
 }

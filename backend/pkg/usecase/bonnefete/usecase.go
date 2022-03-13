@@ -10,6 +10,7 @@ import (
 type Usecase interface {
 	GetAnalytics() (*models.BonneFeteAnalytics, error)
 	Increment(userId uuid.OrderedUUID) (*models.BonneFeteAnalytics, error)
+	ResetCount(userId uuid.OrderedUUID) (*models.BonneFeteAnalytics, error)
 }
 
 func NewUsecase(txProvider storage.TxProvider, analyticsRepo analytics.AnalyticsRepository) Usecase {
@@ -42,6 +43,27 @@ func (u defaultUsecase) Increment(userId uuid.OrderedUUID) (analytics *models.Bo
 	defer u.txProvider.Close(uow, &err)
 
 	err = u.repo.WithUnitOfWork(uow).IncrementBF(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	bfTotalByUsers, err := u.repo.WithUnitOfWork(uow).GetTotalByUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	return computeAnalytics(bfTotalByUsers), nil
+}
+
+func (u defaultUsecase) ResetCount(userId uuid.OrderedUUID) (analytics *models.BonneFeteAnalytics, err error) {
+	var uow storage.UnitOfWork
+	if uow, err = u.txProvider.Begin(); err != nil {
+		return nil, err
+	}
+
+	defer u.txProvider.Close(uow, &err)
+
+	err = u.repo.WithUnitOfWork(uow).ResetCount(userId)
 	if err != nil {
 		return nil, err
 	}
