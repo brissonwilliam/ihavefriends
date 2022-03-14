@@ -24,8 +24,6 @@ type defaultServer struct{}
 func (d defaultServer) Start() error {
 	cfg := config.GetConfig()
 
-	logger.Get().WithField("cfg", cfg).Info("Starting web server")
-
 	if err := checkConfig(cfg); err != nil {
 		logger.Get().Error(err.Error())
 		return err
