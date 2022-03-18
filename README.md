@@ -31,7 +31,6 @@ This project is currently in development. Here are some important missing parts 
 
 ### Features to implement
 - Bill analytics: users can enter their Bill at Le Corsaire. In the dashboard, their highest bill ever paid is displayed as well as the cummulative amount of all time. Also display the cumulative of all users)
-- Users can reset their bonneFete count 
 - Users can change their password
 - User creation for super admins
 
