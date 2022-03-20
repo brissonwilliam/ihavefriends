@@ -26,7 +26,7 @@ type defaultUsecase struct {
 }
 
 func (u defaultUsecase) GetAnalytics() (*models.BonneFeteAnalytics, error) {
-	bfTotalByUsers, err := u.repo.GetTotalByUsers()
+	bfTotalByUsers, err := u.repo.GetTotalBFByUsers()
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (u defaultUsecase) Increment(userId uuid.OrderedUUID) (analytics *models.Bo
 		return nil, err
 	}
 
-	bfTotalByUsers, err := u.repo.WithUnitOfWork(uow).GetTotalByUsers()
+	bfTotalByUsers, err := u.repo.WithUnitOfWork(uow).GetTotalBFByUsers()
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (u defaultUsecase) ResetCount(userId uuid.OrderedUUID) (analytics *models.B
 		return nil, err
 	}
 
-	bfTotalByUsers, err := u.repo.WithUnitOfWork(uow).GetTotalByUsers()
+	bfTotalByUsers, err := u.repo.WithUnitOfWork(uow).GetTotalBFByUsers()
 	if err != nil {
 		return nil, err
 	}

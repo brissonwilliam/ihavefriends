@@ -18,7 +18,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"willow\",\r\n    \"password\": \"corsaire\"\r\n}",
+							"raw": "{\r\n    \"username\": \"willow\",\r\n    \"password\": \"c0rsaire!69\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -186,6 +186,105 @@
 							"path": [
 								"api",
 								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "bill",
+			"item": [
+				{
+					"name": "bills",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host_url}}/api/bills",
+							"host": [
+								"{{host_url}}"
+							],
+							"path": [
+								"api",
+								"bills"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "bills_update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"total\": 20.00\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host_url}}/api/bills",
+							"host": [
+								"{{host_url}}"
+							],
+							"path": [
+								"api",
+								"bills"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "bills_undo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host_url}}/api/bills/undo",
+							"host": [
+								"{{host_url}}"
+							],
+							"path": [
+								"api",
+								"bills",
+								"undo"
 							]
 						}
 					},

@@ -27,6 +27,7 @@ func (r defaultRouter) Configure(e *echo.Echo) {
 	r.configureAuthRoutes(g)
 	r.configureUserRoutes(g)
 	r.configureBonneFeteRoutes(g)
+	r.configureBillRoutes(g)
 }
 
 func (r defaultRouter) configureAuthRoutes(g *echo.Group) {
@@ -43,4 +44,10 @@ func (r defaultRouter) configureBonneFeteRoutes(g *echo.Group) {
 	g.POST("bonneFete/reset", r.h.BonneFete.ResetCount, JWTMiddleware())
 	g.GET("bonneFete", r.h.BonneFete.Get, JWTMiddleware())
 	g.GET("bonneFete/ws", r.h.BonneFete.GetWebSocket, JWTParamsMiddleware())
+}
+
+func (r defaultRouter) configureBillRoutes(g *echo.Group) {
+	g.POST("bills", r.h.Bill.Post, JWTMiddleware())
+	g.POST("bills/undo", r.h.Bill.PostUndoLastBill, JWTMiddleware())
+	g.GET("bills", r.h.Bill.Get, JWTMiddleware())
 }
