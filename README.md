@@ -4,10 +4,11 @@
 <!-- ABOUT THE PROJECT -->
 # About The Project
 
-ihavefriends is a personal project made just for fun for my friends. Most of the content and functionalities 
+ihavefriends is a personal project made just **for fun** for my friends and I. Most of the content and functionalities
 of the website are not to be taken seriously. They are not meant to be understood or used by the general public
 as they are built upon inside jokes and fun memories of the clique.
 
+A live build of this project is in production [here](https://sourpusss.com). Obviously, you will need user credentials to navigate the site though. Either contact me or build the app and try for yourself :)
 
 ### Built With
 
@@ -15,6 +16,7 @@ as they are built upon inside jokes and fun memories of the clique.
 * [NodeJS](https://nodejs.org/en/)
 * [React.js](https://reactjs.org/)
 * [Bootstrap](https://getbootstrap.com)
+* [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
 
 
 ## TODO List
@@ -27,7 +29,7 @@ This project is currently in development. Here are some important missing parts 
 - Build with docker
 - GitHub Actions CI to deploy on PROD
 
-### Features
+### Features to implement
 - Bill analytics: users can enter their Bill at Le Corsaire. In the dashboard, their highest bill ever paid is displayed as well as the cumulative amount of all time. Also display the cumulative of all users)
 - Users can change their password
 - User creation (admin only) (missing frontend only)

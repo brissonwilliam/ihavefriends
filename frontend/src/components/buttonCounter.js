@@ -28,7 +28,7 @@ export default function ButtonCounter() {
                 }
             };
             this.handleClick = this.handleClick.bind(this);
-            
+            this.handleClickReset = this.handleClickReset.bind(this);
         }
 
         componentDidMount() {
@@ -66,6 +66,7 @@ export default function ButtonCounter() {
         }
     
         handleClick(e) {
+            e.preventDefault();
             const requestOptions = {
                 method: 'POST',
                 headers: {
@@ -78,7 +79,25 @@ export default function ButtonCounter() {
                 .then(res => res.json())
                 .then(res => this.updateStateFromResponse(res));
         }
-    
+
+        handleClickReset(e) {
+            e.preventDefault();
+            if (!window.confirm('Voulez-vous vraiment remettre votre compteur à 0?')) {
+                return;
+            }
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + cookies.jwt
+                },
+                body: JSON.stringify()
+            };
+            fetch('/api/bonneFete/reset', requestOptions)
+                .then(res => res.json())
+                .then(res => this.updateStateFromResponse(res));
+        }
+
         render() {
             let analyticsHtml = this.state.analytics.totalByUsers.map((userTotal, index) =>  
                 <div key={index} className="row justify-content-center">
@@ -101,10 +120,10 @@ export default function ButtonCounter() {
                             ans!
                         </p>
                     </div>  
-    
-                    <Button className="m-3 mt-md-1 Btn-Counter-Btn" onClick={this.handleClick} variant="dark">+1</Button>              
-    
-                    <div className="container mt-md-5 mt-3"> 
+
+                    <Button className="col-8 col-lg-3 m-3 mt-md-1 Btn-Counter-Btn" onClick={this.handleClick} variant="dark">+1</Button>
+
+                    <div className="container mt-md-5 mt-3">
                         <div className="row justify-content-center">
                             <div className='col-md-5 col-12 border border-2 rounded-3 align-self-center'>
                                 <h2 className="p-3">Les meilleurs souhaiteurs de fête</h2>
@@ -114,7 +133,11 @@ export default function ButtonCounter() {
                             </div>
                         </div>
                     </div>
-    
+
+                    <br/>
+                    <div>
+                        <Button className="m-3" onClick={this.handleClickReset} variant="dark">Reset</Button>
+                    </div>
                 </div>
             );
         }

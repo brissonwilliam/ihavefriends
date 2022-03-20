@@ -1,5 +1,4 @@
 .Btn-Counter-Btn {
-  width: 23vw;
   height: .75in;
 }
 
@@ -7,7 +6,7 @@
   font-size: 15vw;
   margin: 0px;
   padding: 0px;
-};
+}
 
 .Button-Counter-Container {
   font-size: 50px;
