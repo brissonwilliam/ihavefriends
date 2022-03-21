@@ -7,7 +7,7 @@ import "./dashboard.css"
 class Dashboard extends Component {
     render() {
         return (
-            <div className="Dashboard-Body container">
+            <div className="Dashboard-Body">
                 <ButtonCounter />
                 <br></br>
                 <hr></hr>
