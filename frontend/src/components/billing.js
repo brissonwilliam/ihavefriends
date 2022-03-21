@@ -58,7 +58,6 @@ export default function Billing() {
         }
     
         handleAddBillSubmit(e) {
-            e.preventDefault();
             const requestOptions = {
                 method: 'POST',
                 headers: {
@@ -84,14 +83,12 @@ export default function Billing() {
         }
 
         handleAddBillInputChanged(e) {
-            e.preventDefault();
             let newState  = this.state;
             newState.inputAddBillAmount = e.target.value;
             this.setState(newState);
         }
 
         handleAddBillClick(e) {
-            e.preventDefault();
             let newState  = this.state;
             newState.showPopupAddBill = true;
             newState.showInvalidAddBillResponse = false;
@@ -99,7 +96,6 @@ export default function Billing() {
         }
 
         handleAddBillClose(e) {
-            e.preventDefault();
             let newState  = this.state;
             newState.showPopupAddBill = false;
             newState.showInvalidAddBillResponse = false;
@@ -107,7 +103,6 @@ export default function Billing() {
         }
 
         handleBillUndo(e) {
-            e.preventDefault();
             if (!window.confirm('Voulez-vous vraiment annuler la dernière facture? Le montant est de ' + this.state.analytics.userTotal.lastTotal.toFixed(2) + "$. Vous ne pouvez annuler qu'une seule facture.")) {
                 return;
             }
@@ -167,7 +162,7 @@ export default function Billing() {
                                         </div>
                                     </div>
                                     <h6 className={this.state.showInvalidAddBillResponse ? "text-danger mb-3" : "d-none"}>Requête invalide. Veuillez saisir un nombre valide!</h6>
-                                    <div class="d-grid d-md-flex justify-content-center">
+                                    <div className="d-grid d-md-flex justify-content-center">
                                         <Button type="submit" onClick={this.handleAddBillSubmit} variant="dark">Ajouter</Button>
 
                                     </div>

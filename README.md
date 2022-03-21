@@ -30,7 +30,6 @@ This project is currently in development. Here are some important missing parts 
 - GitHub Actions CI to deploy on PROD
 
 ### Features to implement
-- Bill analytics: users can enter their Bill at Le Corsaire. In the dashboard, their highest bill ever paid is displayed as well as the cumulative amount of all time. Also display the cumulative of all users)
 - Users can change their password
 - User creation (admin only) (missing frontend only)
 - User deletion (admin only)

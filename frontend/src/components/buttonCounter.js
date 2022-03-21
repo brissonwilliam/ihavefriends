@@ -5,12 +5,13 @@ import { w3cwebsocket as W3CWebSocket } from "websocket";
 import "./buttonCounter.css";
 
 const BACKEND_HOST = process.env.REACT_APP_BACKEND_HOST;
+const TLS = process.env.REACT_APP_TLS;
 
 export default function ButtonCounter() {
 
     const [cookies, setCookie] = useCookies(['jwt', 'jwtExpiration']);
 
-    var wsUrl = 'wss://' + BACKEND_HOST + '/api/bonneFete/ws?token=' + cookies.jwt
+    var wsUrl = 'ws' + TLS + '://' + BACKEND_HOST + '/api/bonneFete/ws?token=' + cookies.jwt;
     var ws;
 
     class ButtonCounter extends Component {
@@ -20,10 +21,12 @@ export default function ButtonCounter() {
                 analytics: {
                     total: 0,
                     totalByUsers: [
+                        /*
                         {
                             name: "",
                             count: 0
                         }
+                        */
                     ]
                 }
             };
