@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "moment": "^2.29.1",
     "websocket": "^1.0.34",
     "ws": "^8.5.0"
   }

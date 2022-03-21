@@ -122,8 +122,12 @@ export default function ButtonCounter() {
                     </div>  
 
                     <Button className="col-8 col-lg-3 m-3 mt-md-1 Btn-Counter-Btn" onClick={this.handleClick} variant="dark">+1</Button>
+                    
+                    <div className="m-0">
+                        <Button className="btn btn-sm" onClick={this.handleClickReset} variant="outline-danger">Reset</Button>
+                    </div>
 
-                    <div className="container mt-md-5 mt-3">
+                    <div className="container mt-md-4 mt-3">
                         <div className="row justify-content-center">
                             <div className='col-md-5 col-12 border border-2 rounded-3 align-self-center'>
                                 <h2 className="p-3">Les meilleurs souhaiteurs de fête</h2>
@@ -134,10 +138,7 @@ export default function ButtonCounter() {
                         </div>
                     </div>
 
-                    <br/>
-                    <div>
-                        <Button className="m-3" onClick={this.handleClickReset} variant="dark">Reset</Button>
-                    </div>
+                    
                 </div>
             );
         }
