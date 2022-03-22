@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"time"
+
 	"github.com/brissonwilliam/ihavefriends/backend/config"
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/api/auth"
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/core"
@@ -8,11 +10,10 @@ import (
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/storage/user"
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
-	"time"
 )
 
 const (
-	JWT_VALIDITY = time.Hour * 24 * 7
+	JWT_VALIDITY = time.Hour * 24 * 61
 )
 
 type Usecase interface {
