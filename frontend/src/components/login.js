@@ -49,7 +49,8 @@ export default function Login() {
         }
 
         async setUserInfo(userInfo) {
-            let cookieOptions = {sameSite: true};
+            const maxAgeSecs = 60 * 60 * 24 * 61; // 61 days
+            let cookieOptions = {sameSite: true, maxAge: maxAgeSecs};
             setCookie('jwt', userInfo.jwt, cookieOptions);
             setCookie('jwtExpiration', userInfo.jwtExpiration, cookieOptions);
             this.setState({
