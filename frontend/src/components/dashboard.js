@@ -8,10 +8,9 @@ class Dashboard extends Component {
     render() {
         return (
             <div className="Dashboard-Body">
-                <ButtonCounter />
-                <br></br>
-                <hr></hr>
                 <Billing />
+                <br></br>
+                <ButtonCounter />
             </div>
         );
     }
