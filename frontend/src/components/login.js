@@ -50,7 +50,7 @@ export default function Login() {
 
         async setUserInfo(userInfo) {
             let expirationD = new Date(userInfo.jwtExpiration);
-            let cookieOptions = {sameSite: true, maxAge: expirationD.getSeconds()};
+            let cookieOptions = {sameSite: true, expires: expirationD};
             setCookie('jwt', userInfo.jwt, cookieOptions);
             setCookie('jwtExpiration', userInfo.jwtExpiration, cookieOptions);
             this.setState({
