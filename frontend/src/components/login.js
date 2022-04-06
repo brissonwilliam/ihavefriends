@@ -46,6 +46,8 @@ export default function Login() {
                     this.setUserInfo(userInfo);
                 })
                 .catch(err => console.log(err)); 
+
+                document.getElementById('password-input').value = "";
         }
 
         async setUserInfo(userInfo) {
@@ -93,7 +95,7 @@ export default function Login() {
                             </div>                        
                             <div>
                                 <p className="mb-1">Password</p>
-                                <input name="password" type="password" />
+                                <input id="password-input" name="password" type="password"/>
                             </div>
                             <div>
                                 <label className={this.state.showInvalidCredentials ? "text-danger mt-2" : "d-none"}>Nope! Try again!</label>
