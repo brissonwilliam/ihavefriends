@@ -8,6 +8,10 @@ export default function Billing() {
 
     const [cookies, setCookie] = useCookies(['jwt', 'jwtExpiration']);
 
+    const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+    const billingStartDate = "05/04/2022"
+    const daysSinceBillingStart = Math.round(Math.abs((new Date().getTime() - new Date(billingStartDate).getTime()) / oneDay))
+
     class Billing extends Component {
         constructor() {
             super();
@@ -144,7 +148,10 @@ export default function Billing() {
                         <p className="m-3">🏴‍☠️🍻Total Corsaire🍻🏴‍☠️</p>
                         <h1 className="display-1">{this.state.analytics.grandTotal.toFixed(2)}$</h1>
                     </div>  
-
+                    <div>
+                        <p className="mb-0">Depuis {daysSinceBillingStart} jours</p>
+                        <p>(21 mars 2022)</p>
+                    </div>
                     <Button className="col-6 col-lg-3 m-0" onClick={this.handleAddBillClick} variant="dark">Ajout facture</Button>
                     
                     <>
