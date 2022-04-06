@@ -13,38 +13,60 @@ const (
 		SELECT
 			user.id AS user_id,
 			user.username AS username,
-			IFNULL(bill.cumulative_total, 0.0) AS cumulative_total,
-			IFNULL(bill.highest_total, 0.0) AS highest_total,
-			IFNULL(bill.last_total, 0.0) AS last_total,
-			bill.last_updated AS last_updated
+			IFNULL(bill_ag_user.cumulative_total, 0.0) AS cumulative_total,
+			IFNULL(bill_ag_user.highest_total, 0.0) AS highest_total,
+			IFNULL(bill_ag_user.last_total, 0.0) AS last_total,
+			bill_ag_user.last_updated AS last_updated
 		FROM user
-		LEFT JOIN bill ON bill.user_id = user.id
+		LEFT JOIN bill_ag_user ON bill_ag_user.user_id = user.id
 		ORDER BY cumulative_total DESC
 	`
 
-	queryUpdateBill = `
-		UPDATE bill SET 
+	queryUpdateBillAgUser = `
+		UPDATE bill_ag_user SET 
 			last_total = :new_bill_total,
 			cumulative_total = cumulative_total + :new_bill_total,
-			second_highest_total = IF(:new_bill_total >= highest_total,highest_total,second_highest_total),
 			highest_total = GREATEST(:new_bill_total, highest_total),
 			last_updated = now()
 		WHERE user_id = :user_id
 	`
 
-	queryUndoLastUserBill = `
-		UPDATE bill SET 
-			cumulative_total = cumulative_total - last_total,
-			highest_total = IF(highest_total = last_total, second_highest_total, highest_total),
-			second_highest_total = IF(highest_total = last_total, 0.0, second_highest_total),
-			last_total = 0.0,
-			last_updated = now()
-		WHERE user_id = ?
+	queryInsertBill = `
+		INSERT INTO bill (id, user_id, total) VALUES (:id, :user_id, :new_bill_total)
+	`
+
+	queryRecomputeUserAgBill = `
+		INSERT INTO bill_ag_user (user_id, last_total, highest_total, cumulative_total)
+			SELECT 
+				user.id AS user_id,
+				IFNULL(lt.total, 0) AS last_total,
+				IFNULL(nht.highest_total, 0) AS highest_total,
+			    IFNULL(ct.total, 0) AS cumulative_total
+			FROM user
+			LEFT JOIN (
+				SELECT user_id, total FROM bill WHERE user_id = :user_id ORDER BY created DESC LIMIT 1
+			)  lt ON lt.user_id = user.id
+			LEFT JOIN (
+				SELECT user_id, max(total)  AS highest_total FROM bill WHERE user_id = :user_id GROUP BY user_id
+			) nht ON nht.user_id = user.id
+			LEFT JOIN (
+			    SELECT user_id, sum(total) AS total FROM bill WHERE user_id = :user_id GROUP BY user_id
+			) ct ON ct.user_id = user.id
+			WHERE user.id = :user_id
+		ON DUPLICATE KEY UPDATE
+			last_updated = NOW(),
+		    cumulative_total = VALUES(cumulative_total),
+			highest_total = VALUES(highest_total),
+			last_total = VALUES(last_total)
+	`
+
+	queryDeleteUserLastBill = `
+		DELETE FROM bill WHERE id = (SELECT id FROM (SELECT id FROM bill WHERE user_id = ? ORDER BY created DESC LIMIT 1) t)
 	`
 
 	// only run this before updating so that last_updated keeps its right value
-	queryEnsureBillEntryExists = `
-		INSERT INTO bill(user_id) VALUES(?)
+	queryEnsureBillAgUserEntryExists = `
+		INSERT INTO bill_ag_user(user_id) VALUES(?)
 		ON DUPLICATE KEY UPDATE last_updated = NOW()
 	`
 )
@@ -58,13 +80,23 @@ func (r defaultUserRepository) GetTotalBillsByUser() ([]models.BillUserTotal, er
 	return totalByUsers, nil
 }
 
-func (r defaultUserRepository) UpdateUserBill(update models.BillUpdate) error {
-	_, err := r.db.Exec(queryEnsureBillEntryExists, update.UserId)
+func (r defaultUserRepository) CreateBill(bill models.CreateBill) error {
+	// insert the new bill in its raw form
+	_, err := sqlx.NamedExec(r.db, queryInsertBill, &bill)
 	if err != nil {
 		return err
 	}
 
-	rowsUpdated, err := sqlx.NamedExec(r.db, queryUpdateBill, &update)
+	return nil
+}
+
+func (r defaultUserRepository) UpdateUserAgBillTotal(newBill models.CreateBill) error {
+	_, err := r.db.Exec(queryEnsureBillAgUserEntryExists, newBill.UserId)
+	if err != nil {
+		return err
+	}
+
+	rowsUpdated, err := sqlx.NamedExec(r.db, queryUpdateBillAgUser, &newBill)
 	if err != nil {
 		return err
 	}
@@ -74,19 +106,26 @@ func (r defaultUserRepository) UpdateUserBill(update models.BillUpdate) error {
 		return errRows
 	}
 	if n < 1 {
-		return core.NewErrNotFound("user " + update.UserId.String())
+		return core.NewErrNotFound("user " + newBill.UserId.String())
 	}
 
 	return nil
 }
 
-func (r defaultUserRepository) UndoLastUserBill(userId uuid.OrderedUUID) error {
-	_, err := r.db.Exec(queryEnsureBillEntryExists, userId)
+func (r defaultUserRepository) DeleteLastUserBill(userId uuid.OrderedUUID) error {
+	_, err := r.db.Exec(queryDeleteUserLastBill, userId)
 	if err != nil {
 		return err
 	}
 
-	_, err = r.db.Exec(queryUndoLastUserBill, userId)
+	return nil
+}
+
+func (r defaultUserRepository) RecomputeUserBillAggregates(userId uuid.OrderedUUID) error {
+	arg := struct {
+		UserId uuid.OrderedUUID `db:"user_id"`
+	}{UserId: userId}
+	_, err := sqlx.NamedExec(r.db, queryRecomputeUserAgBill, arg)
 	if err != nil {
 		return err
 	}

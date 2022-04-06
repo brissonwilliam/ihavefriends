@@ -12,9 +12,12 @@ type AnalyticsRepository interface {
 	IncrementBF(userId uuid.OrderedUUID) error
 	ResetCount(userId uuid.OrderedUUID) error
 
+	// TODO: split BF and billing analytics
 	GetTotalBillsByUser() ([]models.BillUserTotal, error)
-	UpdateUserBill(update models.BillUpdate) error
-	UndoLastUserBill(userId uuid.OrderedUUID) error
+	CreateBill(update models.CreateBill) error
+	UpdateUserAgBillTotal(newBill models.CreateBill) error
+	DeleteLastUserBill(userId uuid.OrderedUUID) error
+	RecomputeUserBillAggregates(userId uuid.OrderedUUID) error
 
 	WithUnitOfWork(uow storage.UnitOfWork) AnalyticsRepository
 }

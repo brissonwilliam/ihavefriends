@@ -9,7 +9,7 @@ import (
 
 type Usecase interface {
 	GetAnalytics(userId uuid.OrderedUUID) (*models.BillAnalytics, error)
-	UpdateUserBill(update models.BillUpdate) (*models.BillAnalytics, error)
+	CreateBill(newBill models.CreateBill) (*models.BillAnalytics, error)
 	UndoLastUserBill(userId uuid.OrderedUUID) (*models.BillAnalytics, error)
 }
 
@@ -42,7 +42,12 @@ func (u defaultUsecase) UndoLastUserBill(userId uuid.OrderedUUID) (analytics *mo
 
 	defer u.txProvider.Close(uow, &err)
 
-	err = u.repo.WithUnitOfWork(uow).UndoLastUserBill(userId)
+	err = u.repo.WithUnitOfWork(uow).DeleteLastUserBill(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	err = u.repo.WithUnitOfWork(uow).RecomputeUserBillAggregates(userId)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +61,7 @@ func (u defaultUsecase) UndoLastUserBill(userId uuid.OrderedUUID) (analytics *mo
 	return computeAnalytics(totalBillsByUser, userId), nil
 }
 
-func (u defaultUsecase) UpdateUserBill(update models.BillUpdate) (analytics *models.BillAnalytics, err error) {
+func (u defaultUsecase) CreateBill(newBill models.CreateBill) (analytics *models.BillAnalytics, err error) {
 	var uow storage.UnitOfWork
 	if uow, err = u.txProvider.Begin(); err != nil {
 		return nil, err
@@ -64,7 +69,12 @@ func (u defaultUsecase) UpdateUserBill(update models.BillUpdate) (analytics *mod
 
 	defer u.txProvider.Close(uow, &err)
 
-	err = u.repo.WithUnitOfWork(uow).UpdateUserBill(update)
+	err = u.repo.WithUnitOfWork(uow).CreateBill(newBill)
+	if err != nil {
+		return nil, err
+	}
+
+	err = u.repo.WithUnitOfWork(uow).UpdateUserAgBillTotal(newBill)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +85,7 @@ func (u defaultUsecase) UpdateUserBill(update models.BillUpdate) (analytics *mod
 		return nil, err
 	}
 
-	return computeAnalytics(totalBillsByUser, update.UserId), nil
+	return computeAnalytics(totalBillsByUser, newBill.UserId), nil
 }
 
 func computeAnalytics(billUserTotals []models.BillUserTotal, userId uuid.OrderedUUID) *models.BillAnalytics {

@@ -13,7 +13,8 @@ func (a Amount) MarshalJSON() ([]byte, error) {
 	return []byte(strconv.FormatFloat(float64(a), 'f', 2, 64)), nil
 }
 
-type BillUpdate struct {
+type CreateBill struct {
+	ID           uuid.OrderedUUID `json:"-" db:"id" validate:"required"`
 	UserId       uuid.OrderedUUID `json:"-" db:"user_id" validate:"required"`
 	NewBillTotal float64          `json:"total" db:"new_bill_total" validate:"required"`
 }
