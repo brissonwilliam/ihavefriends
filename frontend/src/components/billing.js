@@ -9,8 +9,8 @@ export default function Billing() {
     const [cookies, setCookie] = useCookies(['jwt', 'jwtExpiration']);
 
     const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-    const billingStartDate = "05/04/2022"
-    const daysSinceBillingStart = Math.round(Math.abs((new Date().getTime() - new Date(billingStartDate).getTime()) / oneDay))
+    const billingStartDate = "2022-03-21";
+    const daysSinceBillingStart = Math.round(Math.abs((new Date().getTime() - new Date(billingStartDate).getTime()) / oneDay));
 
     class Billing extends Component {
         constructor() {
