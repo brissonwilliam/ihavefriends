@@ -29,7 +29,13 @@ export default function Billing() {
                         },
                         */
                     ],
-                    userTotal: {}
+                    userTotal: {},
+                    userTotalsByTime: {
+                        "last48hTotal": 0.0,
+                        "lastWeekTotal": 0.0,
+                        "thisWeekTotal": 0.0,
+                        "thisMonthTotal": 0.0
+                    }
                 },
                 showPopupAddBill: false,
                 showInvalidAddBillResponse: false,
@@ -145,7 +151,7 @@ export default function Billing() {
             return (
                 <div className="col-12">
                     <div className="fs-1 mt-5 mb-3 lh-sm">
-                        <p className="m-3">🏴‍☠️🍻Total Corsaire🍻🏴‍☠️</p>
+                        <p className="mt-3 mb-3">🏴‍☠️🍻 Total Corsaire 🍻🏴‍☠️</p>
                         <h1 className="display-1">{this.state.analytics.grandTotal.toFixed(2)}$</h1>
                     </div>  
                     <div>
@@ -185,6 +191,39 @@ export default function Billing() {
                     <div className="m-2">
                         <Button className="btn btn-sm" onClick={this.handleBillUndo} variant="outline-danger">Annuler</Button>
                     </div>
+
+                    <div className="fs-1 mt-5 lh-sm">
+                        <p className="mb-4">🍹 Dépenses Récentes 📈</p>
+                        <div className='container'>
+                            <div className='row d-flex justify-content-center'>
+                                <div className="col-12 col-lg-5 mb-2">
+                                    <div className="pt-1 border rounded">
+                                        <h5>En 48h</h5>
+                                        <p className='fs-2'>{this.state.analytics.userTotalsByTime.last48hTotal.toFixed(2)}$</p>
+                                    </div>
+                                </div>
+                                <div className="col-12 col-lg-5 mb-2">
+                                    <div className="pt-1 border rounded">
+                                        <h5>Cette semaine</h5>
+                                        <p className='fs-2'>{this.state.analytics.userTotalsByTime.thisWeekTotal.toFixed(2)}$</p>
+                                    </div>
+                                </div>
+                                <div className="col-12 col-lg-5 mb-2">
+                                    <div className="pt-1 border rounded">
+                                        <h5>Ce mois-ci</h5>
+                                        <p className='fs-2'>{this.state.analytics.userTotalsByTime.thisMonthTotal.toFixed(2)}$</p>
+                                    </div>
+                                </div>
+                                <div className="col-12 col-lg-5 mb-2">
+                                    <div className="pt-1 border rounded">
+                                        <h5 >La semaine passée</h5>
+                                        <p className='fs-2'>{this.state.analytics.userTotalsByTime.lastWeekTotal.toFixed(2)}$</p>
+                                    </div>
+                                </div>                  
+                            </div>
+                        </div>
+                        
+                    </div>  
                         
                     <div className="container mt-3">
                         <div className="row justify-content-center">

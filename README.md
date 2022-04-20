@@ -30,6 +30,7 @@ This project is currently in development. Here are some important missing parts 
 - GitHub Actions CI to deploy on PROD
 
 ### Features to implement
+- Refactor code so storage is seperated from components
 - Users can change their password
 - User creation (admin only) (missing frontend only)
 - User deletion (admin only)
