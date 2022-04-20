@@ -26,12 +26,24 @@ type defaultUsecase struct {
 }
 
 func (u defaultUsecase) GetAnalytics(userId uuid.OrderedUUID) (*models.BillAnalytics, error) {
-	totalBillsByUser, err := u.repo.GetBillTotalsAllUsers()
+	var uow storage.UnitOfWork
+	var err error
+	if uow, err = u.txProvider.Begin(); err != nil {
+		return nil, err
+	}
+
+	defer u.txProvider.Close(uow, &err)
+
+	return u.getAnalytics(&uow, userId)
+}
+
+func (u defaultUsecase) getAnalytics(uow *storage.UnitOfWork, userId uuid.OrderedUUID) (*models.BillAnalytics, error) {
+	totalBillsByUser, err := u.repo.WithUnitOfWork(*uow).GetBillTotalsAllUsers()
 	if err != nil {
 		return nil, err
 	}
 
-	totalsByTime, err := u.repo.GetUserBillTotalsByTime(userId)
+	totalsByTime, err := u.repo.WithUnitOfWork(*uow).GetUserBillTotalsByTime(userId)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +69,7 @@ func (u defaultUsecase) UndoLastUserBill(userId uuid.OrderedUUID) (analytics *mo
 		return nil, err
 	}
 
-	return u.GetAnalytics(userId)
+	return u.getAnalytics(&uow, userId)
 }
 
 func (u defaultUsecase) CreateBill(newBill models.CreateBill) (analytics *models.BillAnalytics, err error) {
@@ -78,7 +90,7 @@ func (u defaultUsecase) CreateBill(newBill models.CreateBill) (analytics *models
 		return nil, err
 	}
 
-	return u.GetAnalytics(newBill.UserId)
+	return u.getAnalytics(&uow, newBill.UserId)
 }
 
 func computeAnalytics(billUserTotals []models.BillUserTotal, totalsByTime models.BillUserTotalsByTime, userId uuid.OrderedUUID) *models.BillAnalytics {
