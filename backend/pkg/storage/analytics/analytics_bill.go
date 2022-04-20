@@ -6,10 +6,15 @@ import (
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/core/uuid"
 	"github.com/brissonwilliam/ihavefriends/backend/pkg/models"
 	"github.com/jmoiron/sqlx"
+	"time"
 )
 
 const (
-	queryGetBillTotalByUser = `
+	endOfDayHour = 9 // UTC, so that's 4AM EST or 5AM EDT (east time with daylight's saving)
+)
+
+const (
+	queryGetBillTotalsAllUsers = `
 		SELECT
 			user.id AS user_id,
 			user.username AS username,
@@ -20,6 +25,20 @@ const (
 		FROM user
 		LEFT JOIN bill_ag_user ON bill_ag_user.user_id = user.id
 		ORDER BY cumulative_total DESC
+	`
+
+	// furthest we're aggregating the data is 1 month ago, so add that in WHERE to optimize query (created is indexed)
+	queryGetUserBillTotalByTime = `
+		SELECT 
+			user.id AS user_id,
+			SUM(IF(bill.created >= DATE_SUB(now(), INTERVAL 2 DAY), bill.total, 0)) AS last_48h_total,
+			SUM(IF(bill.created >= :start_of_last_week AND bill.created < :start_of_current_week, bill.total, 0)) AS last_week_total,
+			SUM(IF(bill.created >= :start_of_current_week AND bill.created <= :end_of_day, bill.total, 0)) AS this_week_total,
+			SUM(IF(bill.created >= :start_of_month AND bill.created <= :end_of_day, bill.total, 0)) AS this_month_total
+		FROM bill
+		JOIN user ON user.id = bill.user_id
+		WHERE user.id = :user_id AND bill.created >= :furthest_created_lookup
+		GROUP BY user.id
 	`
 
 	queryUpdateBillAgUser = `
@@ -71,13 +90,83 @@ const (
 	`
 )
 
-func (r defaultUserRepository) GetTotalBillsByUser() ([]models.BillUserTotal, error) {
+func (r defaultUserRepository) GetBillTotalsAllUsers() ([]models.BillUserTotal, error) {
 	totalByUsers := []models.BillUserTotal{}
-	err := sqlx.Select(r.db, &totalByUsers, queryGetBillTotalByUser)
+	err := sqlx.Select(r.db, &totalByUsers, queryGetBillTotalsAllUsers)
 	if err != nil {
 		return nil, err
 	}
 	return totalByUsers, nil
+}
+
+func (r defaultUserRepository) GetUserBillTotalsByTime(userId uuid.OrderedUUID) (models.BillUserTotalsByTime, error) {
+	currentTime := time.Now().UTC()
+
+	startOfWeek := getStartOfWeek(currentTime)
+	startOfMonth := getStartOfMonth(currentTime)
+	currentTimeEndOfDay := getEndOfDay(currentTime)
+	queryCriteria := queryGetUserBillTotalsByTimeCriteria{
+		StartOfWeek:           startOfWeek,
+		EndOfDay:              currentTimeEndOfDay,
+		StartOfLastWeek:       startOfWeek.Add(-1 * time.Hour * 24 * 7),
+		StartOfMonth:          startOfMonth,
+		FurthestCreatedLookup: currentTime.Add(-1 * time.Hour * 24 * 32),
+		UserId:                userId,
+	}
+	query, args, _ := r.db.BindNamed(queryGetUserBillTotalByTime, queryCriteria)
+
+	totalsByTime := []models.BillUserTotalsByTime{}
+	err := sqlx.Select(r.db, &totalsByTime, query, args...)
+	if err != nil {
+		return models.BillUserTotalsByTime{}, err
+	}
+	if len(totalsByTime) < 1 {
+		return models.BillUserTotalsByTime{UserId: userId}, nil
+	}
+
+	return totalsByTime[0], nil
+}
+
+type queryGetUserBillTotalsByTimeCriteria struct {
+	StartOfWeek           time.Time        `db:"start_of_current_week"`
+	EndOfDay              time.Time        `db:"end_of_day"`
+	StartOfLastWeek       time.Time        `db:"start_of_last_week"`
+	StartOfMonth          time.Time        `db:"start_of_month"`
+	FurthestCreatedLookup time.Time        `db:"furthest_created_lookup"`
+	UserId                uuid.OrderedUUID `db:"user_id"`
+}
+
+// returns the datetime for the last monday, or today if today is monday
+// Also aligns to endOfDayHour for better accounting (usually should be 4 or 5AM EST)
+func getStartOfWeek(t time.Time) time.Time {
+	year, month, day := t.Date()
+	currentZeroDay := time.Date(year, month, day, endOfDayHour, 0, 0, 0, t.Location())
+
+	weekday := time.Duration(t.Weekday())
+	// offset sundays by 7 days since sunday is 0
+	if weekday == 0 {
+		weekday += 7
+	}
+
+	// subtract by whatever weekday it is minus 1 to be aligned with monday (weekday 1)
+	monday := currentZeroDay.Add(-1 * (weekday - 1) * 24 * time.Hour)
+	return monday
+}
+
+// aligns current date to first day of month
+func getStartOfMonth(clientTime time.Time) time.Time {
+	year, month, _ := clientTime.Date()
+	return time.Date(year, month, 01, endOfDayHour, 0, 0, 0, clientTime.Location())
+}
+
+// aligns the current date to endOfDayHour if it has not been reached yet for the day, or else enfOfDayHour for tomorrow
+func getEndOfDay(t time.Time) time.Time {
+	year, month, day := t.Date()
+	endOfDay := time.Date(year, month, day, endOfDayHour, 0, 0, 0, t.Location())
+	if t.Hour() >= endOfDayHour {
+		endOfDay = endOfDay.Add(time.Hour * 24)
+	}
+	return endOfDay
 }
 
 func (r defaultUserRepository) CreateBill(bill models.CreateBill) error {

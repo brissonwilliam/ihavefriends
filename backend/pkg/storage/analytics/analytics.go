@@ -13,7 +13,8 @@ type AnalyticsRepository interface {
 	ResetCount(userId uuid.OrderedUUID) error
 
 	// TODO: split BF and billing analytics
-	GetTotalBillsByUser() ([]models.BillUserTotal, error)
+	GetBillTotalsAllUsers() ([]models.BillUserTotal, error)
+	GetUserBillTotalsByTime(userId uuid.OrderedUUID) (models.BillUserTotalsByTime, error)
 	CreateBill(update models.CreateBill) error
 	UpdateUserAgBillTotal(newBill models.CreateBill) error
 	DeleteLastUserBill(userId uuid.OrderedUUID) error

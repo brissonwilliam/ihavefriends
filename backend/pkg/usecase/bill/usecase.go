@@ -26,12 +26,17 @@ type defaultUsecase struct {
 }
 
 func (u defaultUsecase) GetAnalytics(userId uuid.OrderedUUID) (*models.BillAnalytics, error) {
-	totalBillsByUser, err := u.repo.GetTotalBillsByUser()
+	totalBillsByUser, err := u.repo.GetBillTotalsAllUsers()
 	if err != nil {
 		return nil, err
 	}
 
-	return computeAnalytics(totalBillsByUser, userId), nil
+	totalsByTime, err := u.repo.GetUserBillTotalsByTime(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	return computeAnalytics(totalBillsByUser, totalsByTime, userId), nil
 }
 
 func (u defaultUsecase) UndoLastUserBill(userId uuid.OrderedUUID) (analytics *models.BillAnalytics, err error) {
@@ -52,13 +57,7 @@ func (u defaultUsecase) UndoLastUserBill(userId uuid.OrderedUUID) (analytics *mo
 		return nil, err
 	}
 
-	var totalBillsByUser []models.BillUserTotal
-	totalBillsByUser, err = u.repo.WithUnitOfWork(uow).GetTotalBillsByUser()
-	if err != nil {
-		return nil, err
-	}
-
-	return computeAnalytics(totalBillsByUser, userId), nil
+	return u.GetAnalytics(userId)
 }
 
 func (u defaultUsecase) CreateBill(newBill models.CreateBill) (analytics *models.BillAnalytics, err error) {
@@ -79,16 +78,10 @@ func (u defaultUsecase) CreateBill(newBill models.CreateBill) (analytics *models
 		return nil, err
 	}
 
-	var totalBillsByUser []models.BillUserTotal
-	totalBillsByUser, err = u.repo.WithUnitOfWork(uow).GetTotalBillsByUser()
-	if err != nil {
-		return nil, err
-	}
-
-	return computeAnalytics(totalBillsByUser, newBill.UserId), nil
+	return u.GetAnalytics(newBill.UserId)
 }
 
-func computeAnalytics(billUserTotals []models.BillUserTotal, userId uuid.OrderedUUID) *models.BillAnalytics {
+func computeAnalytics(billUserTotals []models.BillUserTotal, totalsByTime models.BillUserTotalsByTime, userId uuid.OrderedUUID) *models.BillAnalytics {
 	var userTotal models.BillUserTotal
 	grandTotal := models.Amount(0.0)
 	for i, ut := range billUserTotals {
@@ -103,5 +96,6 @@ func computeAnalytics(billUserTotals []models.BillUserTotal, userId uuid.Ordered
 		GrandTotal:   grandTotal,
 		TotalByUsers: billUserTotals,
 		UserTotal:    userTotal,
+		TotalsByTime: totalsByTime,
 	}
 }

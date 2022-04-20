@@ -20,9 +20,10 @@ type CreateBill struct {
 }
 
 type BillAnalytics struct {
-	GrandTotal   Amount          `json:"grandTotal"`
-	TotalByUsers []BillUserTotal `json:"totalByUsers"`
-	UserTotal    BillUserTotal   `json:"userTotal"`
+	GrandTotal   Amount               `json:"grandTotal"`
+	TotalByUsers []BillUserTotal      `json:"totalByUsers"`
+	UserTotal    BillUserTotal        `json:"userTotal"`
+	TotalsByTime BillUserTotalsByTime `json:"userTotalsByTime"`
 }
 
 type BillUserTotal struct {
@@ -32,4 +33,12 @@ type BillUserTotal struct {
 	HighestTotal    Amount           `json:"highestTotal" db:"highest_total"`
 	LastTotal       Amount           `json:"lastTotal" db:"last_total"`
 	LastVisit       *time.Time       `json:"lastVisit" db:"last_updated"`
+}
+
+type BillUserTotalsByTime struct {
+	UserId         uuid.OrderedUUID `json:"-" db:"user_id"`
+	Last48HTotal   Amount           `json:"last48hTotal" db:"last_48h_total"`
+	LastWeekTotal  Amount           `json:"lastWeekTotal" db:"last_week_total"`
+	ThisWeekTotal  Amount           `json:"thisWeekTotal" db:"this_week_total"`
+	ThisMonthTotal Amount           `json:"thisMonthTotal" db:"this_month_total"`
 }
