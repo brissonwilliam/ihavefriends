@@ -1,0 +1,1 @@
+ALTER TABLE bill DROP COLUMN is_adjustment;
