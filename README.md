@@ -28,12 +28,14 @@ This project is currently in development. Here are some important missing parts 
 - MORE UNIT TESTS, anything under 90% is a shame
 - Build with docker
 - GitHub Actions CI to deploy on PROD
+- Refactor code so storage is seperated from components
 
 ### Features to implement
-- Refactor code so storage is seperated from components
-- Users can change their password
+- Users can change their password (authenticated users can change password, unauthenticated users must be provided a token through email, or super admin approval / provides link since we don't have emails in db or any mail service implemented)
 - User creation (admin only) (missing frontend only)
 - User deletion (admin only)
+- Graph of total sales per month
+- Graph of user (personnal) sales per month
 
 
 <!-- GETTING STARTED -->
