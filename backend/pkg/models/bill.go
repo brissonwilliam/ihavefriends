@@ -42,3 +42,9 @@ type BillUserTotalsByTime struct {
 	ThisWeekTotal  Amount           `json:"thisWeekTotal" db:"this_week_total"`
 	ThisMonthTotal Amount           `json:"thisMonthTotal" db:"this_month_total"`
 }
+
+type MonthlyBillTotals struct {
+}
+
+type UserMonthlyBillTotals struct {
+}
