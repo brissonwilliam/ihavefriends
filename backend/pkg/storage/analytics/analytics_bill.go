@@ -66,7 +66,7 @@ const (
 				SELECT user_id, total FROM bill WHERE user_id = :user_id ORDER BY created DESC LIMIT 1
 			)  lt ON lt.user_id = user.id
 			LEFT JOIN (
-				SELECT user_id, max(total)  AS highest_total FROM bill WHERE user_id = :user_id GROUP BY user_id
+				SELECT user_id, max(total)  AS highest_total FROM bill WHERE user_id = :user_id AND is_adjustment = false GROUP BY user_id
 			) nht ON nht.user_id = user.id
 			LEFT JOIN (
 			    SELECT user_id, sum(total) AS total FROM bill WHERE user_id = :user_id GROUP BY user_id
