@@ -26,7 +26,6 @@ This project is currently in development. Here are some important missing parts 
 ### Technical tasks
 - UNIT TESTS
 - MORE UNIT TESTS, anything under 90% is a shame
-- Build with docker
 - GitHub Actions CI to deploy on PROD
 
 ### Features to implement

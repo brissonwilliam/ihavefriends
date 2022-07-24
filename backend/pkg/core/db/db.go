@@ -9,7 +9,7 @@ import (
 
 // Connect to the database and return a handle, or an error
 func Connect(cfg config.DB) (*sqlx.DB, error) {
-	connectionString := fmt.Sprintf("%s:%s@(%s:%d)/%s?multiStatements=true&parseTime=true", cfg.Username, cfg.Password,cfg.Host, cfg.Port, cfg.DatabaseName)
+	connectionString := fmt.Sprintf("%s:%s@(%s:%d)/%s?multiStatements=true&parseTime=true", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DatabaseName)
 	if cfg.TLS {
 		connectionString = connectionString + "&tls=true"
 	}
@@ -19,7 +19,7 @@ func Connect(cfg config.DB) (*sqlx.DB, error) {
 	}
 	err = db.Ping()
 	if err != nil {
-	 	return nil, err
+		return nil, err
 	}
 	return db, nil
 }
