@@ -17,6 +17,7 @@ A live build of this project is in production [here](https://sourpusss.com). Obv
 * [React.js](https://reactjs.org/)
 * [Bootstrap](https://getbootstrap.com)
 * [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
+* [Docker](https://www.docker.com) (optional)
 
 
 ## TODO List
