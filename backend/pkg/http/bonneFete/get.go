@@ -18,7 +18,7 @@ var (
 			if strings.Contains(origin, "127.0.0.1") {
 				return true
 			}
-			if strings.Contains(origin, "ihavefriends.com") {
+			if strings.Contains(origin, "ihavefriends.ovh") {
 				return true
 			}
 			if strings.Contains(origin, "localhost") {

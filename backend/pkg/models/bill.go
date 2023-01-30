@@ -16,7 +16,7 @@ func (a Amount) MarshalJSON() ([]byte, error) {
 type CreateBill struct {
 	ID           uuid.OrderedUUID `json:"-" db:"id" validate:"required"`
 	UserId       uuid.OrderedUUID `json:"-" db:"user_id" validate:"required"`
-	NewBillTotal float64          `json:"total" db:"new_bill_total" validate:"required"`
+	NewBillTotal float64          `json:"total" db:"new_bill_total" validate:"required,lte=2000"`
 }
 
 type BillAnalytics struct {
