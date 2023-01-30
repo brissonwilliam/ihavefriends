@@ -9,10 +9,16 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"net/http"
+	"time"
 )
 
 func GlobalMiddlewares() []echo.MiddlewareFunc {
-	return []echo.MiddlewareFunc{middleware.Logger(), middleware.CORS(), middleware.BodyLimit("2M")}
+	rl := middleware.NewRateLimiterMemoryStoreWithConfig(middleware.RateLimiterMemoryStoreConfig{
+		Rate:      10,
+		Burst:     20,
+		ExpiresIn: time.Minute * 3,
+	})
+	return []echo.MiddlewareFunc{middleware.Logger(), middleware.CORS(), middleware.BodyLimit("2M"), middleware.RateLimiter(rl)}
 }
 
 func JWTMiddleware() echo.MiddlewareFunc {
