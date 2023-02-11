@@ -19,6 +19,7 @@ jobs:
         with:
           node-version: 16.3
       - uses: actions/setup-go@v3
+        working-directory: ./backend
         with:
           go-version: '1.19'
           cache: true
