@@ -4,7 +4,7 @@ mkdir newapp
 tar -xzf build.tar.gz -C newapp
 mv newapp/frontend-build newapp/frontend
 mv newapp/backend-build newapp/backend
-chmod +xr newapp/*
+chmod 700 -r newapp/*
 mv app app.old
 mv newapp app
 pkill -f backend

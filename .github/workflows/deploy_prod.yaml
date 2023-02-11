@@ -1,0 +1,56 @@
+name: deploy-prod
+
+on:
+  push:
+    branches:
+      - master
+  workflow_run:
+    workflows: [ "Deploy to prod" ]
+    types: [ requested ]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+  env:
+    GOARCH: amd64
+    GOOS: linux
+  steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16.3
+    - uses: actions/setup-go@v3
+      with:
+        go-version: '1.19'
+        cache: true
+
+    - name: Build backend
+      working-directory: ./backend
+      run:  |
+        go mod tidy
+        go mod download
+        go build -o ../backend-build
+
+    - name: Build front
+      working-directory: ./frontend
+      run: |
+        npm install
+        npm run build -- --production
+        mv build ../frontend-build
+
+    - name: Compress build
+      run: tar -cvzf build.tar.gz frontend-build backend-build
+
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.IHAVEFRIENDS_SSH_PRIVATE }}
+        name: id_rsa_gitdeploy # optional
+        known_hosts: ${{ secrets.IHAVEFRIENDS_SSH_HOST_FINGERPRINT }}
+        #config: ${{ secrets.CONFIG }} # optional
+        if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
+
+    - name: Deploy on remote server
+      run: |
+        scp ./build.tar.gz ${{ secrets.IHAVEFRIENDS_PROD_HOST }}:~
+        scp ./deploy_localprod.sh ${{ secrets.IHAVEFRIENDS_PROD_HOST }}:~
+        ssh ${{ secrets.IHAVEFRIENDS_PROD_HOST }} "source ~/.bashrc;sh ~/deploy_localprod.sh"
