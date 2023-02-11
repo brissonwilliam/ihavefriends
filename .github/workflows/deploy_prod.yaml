@@ -54,11 +54,15 @@ jobs:
           key: ${{ secrets.IHAVEFRIENDS_SSH_PRIVATE }}
           name: id_rsa_gitdeploy # optional
           known_hosts: ${{ secrets.IHAVEFRIENDS_SSH_HOST_FINGERPRINT }}
-          #config: ${{ secrets.CONFIG }} # optional
-          if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
+          config: |                                         # will be appended to existing .ssh/config
+            Host prodsrv
+              HostName ${{ secrets.IHAVEFRIENDS_PROD_HOST }}
+              User ${{ secrets.IHAVEFRIENDS_SSH_USER }}
+              IdentityFile ~/.ssh/id_rsa_gitdeploy
+          if_key_exists: replace # replace / ignore / fail; optional (defaults to fail)
 
       - name: Deploy on remote server
         run: |
-          scp ./build.tar.gz ${{ secrets.IHAVEFRIENDS_PROD_HOST }}:~
-          scp ./deploy_localprod.sh ${{ secrets.IHAVEFRIENDS_PROD_HOST }}:~
-          ssh ${{ secrets.IHAVEFRIENDS_PROD_HOST }} "source ~/.bashrc;sh ~/deploy_localprod.sh"
+          scp ./build.tar.gz prodsrv:~
+          scp ./deploy_localprod.sh prodsrv:~
+          ssh prodsrv "source ~/.bashrc;sh ~/deploy_localprod.sh"
