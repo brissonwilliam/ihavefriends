@@ -18,8 +18,13 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.3
+
+      - name: Copy go mod and sum to root for cache optimize
+        run: |
+          cp ./backend/go.sum .
+          cp ./backend/go.mod .
+
       - uses: actions/setup-go@v3
-        working-directory: ./backend
         with:
           go-version: '1.19'
           cache: true
