@@ -38,6 +38,8 @@ jobs:
 
       - name: Build front
         working-directory: ./frontend
+        env:
+          CI: false # npm build crashes because it treats warnings as errors here
         run: |
           npm install
           npm run build -- --production
