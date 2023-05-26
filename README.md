@@ -8,7 +8,7 @@ ihavefriends is a personal project made just **for fun** for my friends and I. M
 of the website are not to be taken seriously. They are not meant to be understood or used by the general public
 as they are built upon inside jokes and fun memories of the clique.
 
-A live build of this project is in production [here](https://sourpusss.com). Obviously, you will need user credentials to navigate the site though. Either contact me or build the app and try for yourself :)
+A live build of this project is in production [here](https://ihavefriends.ovh). Obviously, you will need user credentials to navigate the site though. Either contact me or build the app and try for yourself :)
 
 ### Built With
 
