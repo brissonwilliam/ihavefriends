@@ -4,6 +4,7 @@ import { useCookies } from 'react-cookie';
 import './login.css';
 import UserSelection from './userSelection';
 import Button from 'react-bootstrap/esm/Button';
+import cfg from '../cfg';
 
 
 export default function Login() {
@@ -68,7 +69,7 @@ export default function Login() {
                 },
                 body: JSON.stringify(credentials)
             };
-            return fetch('/api/auth', options)
+            return fetch(cfg.BACKEND_HOST + '/auth', options)
         }
 
         // this callback is called from UserSelection child

@@ -1,5 +1,6 @@
 import { Component } from "react";
 import Button from "react-bootstrap/esm/Button";
+import cfg from "../cfg";
 
 class UserSelection extends Component {
     constructor(props) {
@@ -15,7 +16,7 @@ class UserSelection extends Component {
     }
 
     componentDidMount() {
-        fetch('/api/publicUsers')
+        fetch(cfg.BACKEND_HOST + '/publicUsers')
             .then(res => res.json())
             .then(res => this.updateState(res));
     }

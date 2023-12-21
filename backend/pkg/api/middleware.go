@@ -18,7 +18,11 @@ func GlobalMiddlewares() []echo.MiddlewareFunc {
 		Burst:     20,
 		ExpiresIn: time.Minute * 3,
 	})
-	return []echo.MiddlewareFunc{middleware.Logger(), middleware.CORS(), middleware.BodyLimit("2M"), middleware.RateLimiter(rl)}
+	cors := middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
+	})
+	return []echo.MiddlewareFunc{middleware.Logger(), cors, middleware.BodyLimit("2M"), middleware.RateLimiter(rl)}
 }
 
 func JWTMiddleware() echo.MiddlewareFunc {

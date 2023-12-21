@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import { useCookies } from 'react-cookie';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import "./billing.css"
+import "./billing.css";
+import cfg from '../cfg';
 
 export default function Billing() {
 
@@ -53,7 +54,7 @@ export default function Billing() {
                 method: 'GET',
                 headers: {'Authorization': 'Bearer ' + cookies.jwt}
             }
-            fetch('/api/bills', requestOptions)
+            fetch(cfg.BACKEND_HOST + '/bills', requestOptions)
                 .then(res => res.json())
                 .then(res => this.updateStateFromResponse(res));
         }
@@ -79,7 +80,7 @@ export default function Billing() {
                     total: parseFloat(this.state.inputAddBillAmount.replace(",", "."))
                 })
             };
-            fetch('/api/bills', requestOptions)
+            fetch(cfg.BACKEND_HOST + '/bills', requestOptions)
                 .then(res => {
                     if (!res.ok) {
                         let newState = this.state;
@@ -125,7 +126,7 @@ export default function Billing() {
                 },
                 body: JSON.stringify()
             };
-            fetch('/api/bills/undo', requestOptions)
+            fetch(cfg.BACKEND_HOST + '/bills/undo', requestOptions)
                 .then(res => res.json())
                 .then(res => this.updateStateFromResponse(res));
         }

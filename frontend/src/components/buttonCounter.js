@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import { useCookies } from 'react-cookie';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import "./buttonCounter.css";
+import cfg from "../cfg";
 
 const BACKEND_HOST = process.env.REACT_APP_BACKEND_HOST;
 const TLS = process.env.REACT_APP_TLS;
@@ -11,7 +12,7 @@ export default function ButtonCounter() {
 
     const [cookies, setCookie] = useCookies(['jwt', 'jwtExpiration']);
 
-    var wsUrl = 'ws' + TLS + '://' + BACKEND_HOST + '/api/bonneFete/ws?token=' + cookies.jwt;
+    var wsUrl = 'ws' + TLS + '://' + BACKEND_HOST + '/bonneFete/ws?token=' + cookies.jwt;
     var ws;
 
     class ButtonCounter extends Component {
@@ -51,7 +52,7 @@ export default function ButtonCounter() {
                 method: 'GET',
                 headers: {'Authorization': 'Bearer ' + cookies.jwt}
             }
-            fetch('/api/bonneFete', requestOptions)
+            fetch(cfg.BACKEND_HOST + '/bonneFete', requestOptions)
                 .then(res => res.json())
                 .then(res => this.updateStateFromResponse(res));
         }
@@ -78,7 +79,7 @@ export default function ButtonCounter() {
                 },
                 body: JSON.stringify()
             };
-            fetch('/api/bonneFete', requestOptions)
+            fetch(cfg.BACKEND_HOST + '/bonneFete', requestOptions)
                 .then(res => res.json())
                 .then(res => this.updateStateFromResponse(res));
         }
@@ -96,7 +97,7 @@ export default function ButtonCounter() {
                 },
                 body: JSON.stringify()
             };
-            fetch('/api/bonneFete/reset', requestOptions)
+            fetch(cfg.BACKEND_HOST + '/bonneFete/reset', requestOptions)
                 .then(res => res.json())
                 .then(res => this.updateStateFromResponse(res));
         }

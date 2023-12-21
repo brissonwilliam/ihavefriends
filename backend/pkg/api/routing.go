@@ -23,7 +23,7 @@ type defaultRouter struct {
 func (r defaultRouter) Configure(e *echo.Echo) {
 	e.Use(GlobalMiddlewares()...)
 
-	g := e.Group("api/")
+	g := e.Group("/")
 	r.configureAuthRoutes(g)
 	r.configureUserRoutes(g)
 	r.configureBonneFeteRoutes(g)
